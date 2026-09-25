@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "pack": {
+    "id": "core-english",
+    "name": "Core English",
+    "description": "Expresiones del inglés general: phrasal verbs, collocations y conectores.",
+    "version": 1,
+    "language": "en",
+    "source": "Proyecto Learning English App"
+  },
+  "expressions": [
+    {
+      "id": "figure-out",
+      "expression": "figure out",
+      "meaning": "averiguar, descubrir, resolver",
+      "explanation": "Use it when you finally find the answer to a question or the cause of a problem.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["figure + object + out", "figure out + wh-clause"],
+      "examples": [
+        { "english": "I'm trying to figure out what happened last night.", "spanish": "Estoy intentando averiguar qué pasó anoche.", "context": "general", "isPrimary": true },
+        { "english": "We still need to figure out why the service keeps failing.", "spanish": "Todavía necesitamos averiguar por qué el servicio sigue fallando.", "context": "software-development" }
+      ],
+      "tags": ["phrasal-verb", "problem-solving"]
+    },
+    {
+      "id": "put-off",
+      "expression": "put off",
+      "meaning": "aplazar, posponer",
+      "explanation": "To delay something until a later moment, usually something you decided to do.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["put + object + off", "put off + gerund"],
+      "examples": [
+        { "english": "I keep putting off writing the summary.", "spanish": "Sigo aplazando escribir el resumen.", "context": "work", "isPrimary": true },
+        { "english": "They had to put off the launch until Friday.", "spanish": "Tuvieron que posponer el lanzamiento hasta el viernes.", "context": "work" }
+      ],
+      "tags": ["phrasal-verb", "productivity"]
+    },
+    {
+      "id": "run-into",
+      "expression": "run into",
+      "meaning": "encontrarse con, toparse con (un problema)",
+      "explanation": "To unexpectedly meet a person or, more often, an obstacle such as a problem or a difficulty.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["run into + problem", "run into + person"],
+      "examples": [
+        { "english": "We ran into a problem with the payment integration.", "spanish": "Nos encontramos con un problema con la pasarela de pago.", "context": "software-development", "isPrimary": true },
+        { "english": "I ran into an old colleague at the conference.", "spanish": "Me topé con un antiguo compañero en la conferencia.", "context": "general" }
+      ],
+      "tags": ["phrasal-verb", "problems"]
+    },
+    {
+      "id": "look-into",
+      "expression": "look into",
+      "meaning": "investigar, examinar",
+      "explanation": "To examine something carefully in order to understand it or to find the cause of a problem.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["look into + problem", "look into + question"],
+      "examples": [
+        { "english": "Someone should look into why the app crashes on Android.", "spanish": "Alguien debería investigar por qué la app se bloquea en Android.", "context": "software-development", "isPrimary": true },
+        { "english": "The committee will look into the complaint before replying.", "spanish": "El comité examinará la queja antes de responder.", "context": "work" }
+      ],
+      "tags": ["phrasal-verb", "investigation"]
+    },
+    {
+      "id": "turn-down",
+      "expression": "turn down",
+      "meaning": "rechazar, decir que no",
+      "explanation": "To refuse an offer, a request or a job. Compare with turning a device down, which means lowering the volume.",
+      "difficulty": "EASY",
+      "level": "A2",
+      "patterns": ["turn + object + down", "turn down + offer"],
+      "examples": [
+        { "english": "She turned down the job offer because of the hours.", "spanish": "Ella rechazó la oferta de empleo por los horarios.", "context": "work", "isPrimary": true },
+        { "english": "He turned down the invitation without giving a reason.", "spanish": "Él rechazó la invitación sin dar explicaciones.", "context": "general" }
+      ],
+      "tags": ["phrasal-verb", "decisions"]
+    },
+    {
+      "id": "bring-up",
+      "expression": "bring up",
+      "meaning": "plantear, sacar a colación",
+      "explanation": "To mention a topic so that people can discuss it, or to raise a child.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["bring up + topic", "bring up + issue"],
+      "examples": [
+        { "english": "I want to bring up a concern about the deadline.", "spanish": "Quiero plantear una inquietud sobre el plazo.", "context": "work", "isPrimary": true },
+        { "english": "Don't bring up that subject again, please.", "spanish": "No vuelvas a sacar ese tema, por favor.", "context": "general" }
+      ],
+      "tags": ["phrasal-verb", "communication"]
+    },
+    {
+      "id": "set-up",
+      "expression": "set up",
+      "meaning": "montar, preparar, crear (algo)",
+      "explanation": "To arrange the equipment or the structure needed for something to work or to exist.",
+      "difficulty": "EASY",
+      "level": "A2",
+      "patterns": ["set up + object", "set up + shop/business"],
+      "examples": [
+        { "english": "It takes ten minutes to set up the new router.", "spanish": "Tienen diez minutos para montar el router nuevo.", "context": "general", "isPrimary": true },
+        { "english": "She set up a small business while studying.", "spanish": "Montó un pequeño negocio mientras estudiaba.", "context": "business" }
+      ],
+      "tags": ["phrasal-verb", "work"]
+    },
+    {
+      "id": "take-over",
+      "expression": "take over",
+      "meaning": "asumir el control, hacerse cargo",
+      "explanation": "To start managing a team, a project or a company, either by agreement or because the previous owner left.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["take over + team/company/project"],
+      "examples": [
+        { "english": "After her accident, his brother took over the family shop.", "spanish": "Tras su accidente, su hermano asumió el negocio familiar.", "context": "business", "isPrimary": true },
+        { "english": "The new manager took over the project in March.", "spanish": "El nuevo gestor se hizo cargo del proyecto en marzo.", "context": "work" }
+      ],
+      "tags": ["business", "work"]
+    },
+    {
+      "id": "carry-out",
+      "expression": "carry out",
+      "meaning": "llevar a cabo, realizar",
+      "explanation": "To perform a task, a plan or a study from beginning to end.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["carry out + task/plan/study"],
+      "examples": [
+        { "english": "The team carried out a survey among 500 employees.", "spanish": "El equipo realizó una encuesta entre 500 empleados.", "context": "work", "isPrimary": true },
+        { "english": "We carried out the changes without any downtime.", "spanish": "Aplicamos los cambios sin ninguna interrupción.", "context": "software-development" }
+      ],
+      "tags": ["work", "research"]
+    },
+    {
+      "id": "get-across",
+      "expression": "get across",
+      "meaning": "transmitir, hacer entender",
+      "explanation": "To succeed in making an idea understood. In British English, get on with means the same thing.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["get + message + across + to someone"],
+      "examples": [
+        { "english": "I struggled to get the main idea across.", "spanish": "Me costó transmitir la idea principal.", "context": "communication", "isPrimary": true },
+        { "english": "Use a simple example to get the point across.", "spanish": "Usa un ejemplo sencillo para hacer entender el punto.", "context": "communication" }
+      ],
+      "tags": ["phrasal-verb", "communication"]
+    },
+    {
+      "id": "put-up-with",
+      "expression": "put up with",
+      "meaning": "aguantar, tolerar",
+      "explanation": "To accept a bad or unpleasant situation without complaining much about it.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["put up with + noun/gerund"],
+      "examples": [
+        { "english": "I can't put up with this noise any longer.", "spanish": "No puedo aguantar este ruido ni un minuto más.", "context": "general", "isPrimary": true },
+        { "english": "She put up with the delays for months.", "spanish": "Aguantó los retrasos durante meses.", "context": "work" }
+      ],
+      "tags": ["phrasal-verb", "tolerance"]
+    },
+    {
+      "id": "come-up-with",
+      "expression": "come up with",
+      "meaning": "ocurrírsele, proponer",
+      "explanation": "To produce an idea, a plan or an answer, usually quickly and after thinking.",
+      "difficulty": "EASY",
+      "level": "A2",
+      "patterns": ["come up with + idea/plan/solution"],
+      "examples": [
+        { "english": "We need a better idea. Can anyone come up with one?", "spanish": "Necesitamos una idea mejor. ¿Alguien se le ocurre alguna?", "context": "work", "isPrimary": true },
+        { "english": "He never runs out of ideas for the children's stories.", "spanish": "A él nunca se le acaban las ideas para los cuentos infantiles.", "context": "general" }
+      ],
+      "tags": ["ideas", "problem-solving"]
+    },
+    {
+      "id": "sort-out",
+      "expression": "sort out",
+      "meaning": "resolver, organizar, clasificar",
+      "explanation": "To deal with a problem until it is solved, or to organize things.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["sort out + problem/situation", "sort out + files"],
+      "examples": [
+        { "english": "Let's sort out this mess before Friday.", "spanish": "Arreglemos este desastre antes del viernes.", "context": "work", "isPrimary": true },
+        { "english": "I'm sorting out my notes from the meeting.", "spanish": "Estoy ordenando mis notas de la reunión.", "context": "study" }
+      ],
+      "tags": ["phrasal-verb", "problems"]
+    },
+    {
+      "id": "call-off",
+      "expression": "call off",
+      "meaning": "cancel, suspender",
+      "explanation": "To cancel an event or stop an activity that has been planned.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["call off + event/strike/meeting"],
+      "examples": [
+        { "english": "The organizers called off the event because of the storm.", "spanish": "Los organizadores cancelaron el evento por la tormenta.", "context": "general", "isPrimary": true },
+        { "english": "Management decided to call off the strike.", "spanish": "La dirección decidió cancelar la huelga.", "context": "work" }
+      ],
+      "tags": ["phrasal-verb", "work"]
+    },
+    {
+      "id": "stand-out",
+      "expression": "stand out",
+      "meaning": "destacar, sobresaltar",
+      "explanation": "To be clearly better or more noticeable than everything else around you.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["stand out + among/from"],
+      "examples": [
+        { "english": "Her explanations stand out because they are so clear.", "spanish": "Sus explicaciones destacan porque son muy claras.", "context": "general", "isPrimary": true },
+        { "english": "That red logo stands out from a distance.", "spanish": "Ese logo rojo destaca a distancia.", "context": "general" }
+      ],
+      "tags": ["evaluation", "description"]
+    },
+    {
+      "id": "break-down",
+      "expression": "break down",
+      "meaning": "averiarse, descomponerse",
+      "explanation": "For a machine or system: to stop working. For a car: to stop in the middle of the journey.",
+      "difficulty": "EASY",
+      "level": "A2",
+      "patterns": ["break down + in/on"],
+      "examples": [
+        { "english": "The lift broke down on the fifth floor.", "spanish": "El ascensor se averió en el quinto piso.", "context": "general", "isPrimary": true },
+        { "english": "Our reporting tool breaks down when the data is huge.", "spanish": "Nuestra herramienta de informes falla cuando los datos son enormes.", "context": "software-development" }
+      ],
+      "tags": ["problems", "software-development"]
+    },
+    {
+      "id": "drop-off",
+      "expression": "drop off",
+      "meaning": "dejar, entregar (a una persona o un objeto)",
+      "explanation": "To take someone or something to a place and leave them there.",
+      "difficulty": "EASY",
+      "level": "A2",
+      "patterns": ["drop + person/object + off + at"],
+      "examples": [
+        { "english": "I'll drop you off at the station on my way home.", "spanish": "Te dejo en la estación de camino a casa.", "context": "general", "isPrimary": true },
+        { "english": "Can you drop off the parcel at reception?", "spanish": "¿Puedes entregar el paquete en recepción?", "context": "work" }
+      ],
+      "tags": ["travel", "delivery"]
+    },
+    {
+      "id": "look-up-to",
+      "expression": "look up to",
+      "meaning": "admirar, respetar (a alguien)",
+      "explanation": "To respect or admire someone. Do not confuse it with look up, which is to search for a word in a dictionary.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["look up to + person"],
+      "examples": [
+        { "english": "I grew up looking up to my older brother.", "spanish": "Creci admirando a mi hermano mayor.", "context": "general", "isPrimary": true },
+        { "english": "New hires look up to senior engineers for guidance.", "spanish": "Las nuevas incorporaciones admiran a los ingenieros senior y piden su orientación.", "context": "work" }
+      ],
+      "tags": ["people", "phrasal-verb"]
+    },
+    {
+      "id": "make-a-decision",
+      "expression": "make a decision",
+      "meaning": "tomar una decisión",
+      "explanation": "A standard collocation. In everyday English, decide is more common than make a decision.",
+      "difficulty": "EASY",
+      "level": "A2",
+      "patterns": ["make a decision + about/on"],
+      "examples": [
+        { "english": "It's hard to make a decision without more data.", "spanish": "Es difícil tomar una decisión sin más datos.", "context": "work", "isPrimary": true },
+        { "english": "She made a decision on the spot.", "spanish": "Tomó una decisión en el momento.", "context": "general" }
+      ],
+      "tags": ["decisions", "collocations"]
+    },
+    {
+      "id": "take-responsibility",
+      "expression": "take responsibility",
+      "meaning": "asumir la responsabilidad",
+      "explanation": "To accept that you are the one who must answer for something, usually a mistake or a task.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["take responsibility + for"],
+      "examples": [
+        { "english": "He took responsibility for the mistake and fixed it.", "spanish": "Asumió la responsabilidad del error y lo arregló.", "context": "work", "isPrimary": true },
+        { "english": "Taking responsibility early saves a lot of drama.", "spanish": "Asumir la responsabilidad a tiempo ahorra mucho drama.", "context": "work" }
+      ],
+      "tags": ["work", "collocations"]
+    },
+    {
+      "id": "do-research",
+      "expression": "do research",
+      "meaning": "hacer una investigación",
+      "explanation": "Research is uncountable, so we say do research, never do a research. The verb carry out is also common.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["do research + into/on"],
+      "examples": [
+        { "english": "We did some research into how competitors price their plans.", "spanish": "Investigamos cómo la competencia fija sus precios.", "context": "work", "isPrimary": true },
+        { "english": "She does research on language learning at the university.", "spanish": "Investiga sobre aprendizaje de lenguas en la universidad.", "context": "study" }
+      ],
+      "tags": ["research", "collocations"]
+    },
+    {
+      "id": "pay-attention",
+      "expression": "pay attention",
+      "meaning": "prestar atención",
+      "explanation": "To listen or watch carefully because the information matters.",
+      "difficulty": "EASY",
+      "level": "A2",
+      "patterns": ["pay attention + to"],
+      "examples": [
+        { "english": "Pay attention to the tense in the first exercise.", "spanish": "Presta atención al tiempo verbal en el primer ejercicio.", "context": "study", "isPrimary": true },
+        { "english": "Nobody pays attention during long meetings.", "spanish": "Nadie presta atención en las reuniones largas.", "context": "work" }
+      ],
+      "tags": ["study", "collocations"]
+    },
+    {
+      "id": "draw-a-conclusion",
+      "expression": "draw a conclusion",
+      "meaning": "sacar una conclusión",
+      "explanation": "To reach a decision or an opinion after examining information.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["draw a conclusion + from/about"],
+      "examples": [
+        { "english": "It's too early to draw a conclusion from one test.", "spanish": "Es demasiado pronto para sacar una conclusión de un solo test.", "context": "study", "isPrimary": true },
+        { "english": "The committee drew conclusions from the audit report.", "spanish": "El comité sacó conclusiones del informe de auditoría.", "context": "work" }
+      ],
+      "tags": ["reasoning", "collocations"]
+    },
+    {
+      "id": "keep-track",
+      "expression": "keep track",
+      "meaning": "llevar el seguimiento, llevar la cuenta",
+      "explanation": "To keep a record of something so that you always know its current state.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["keep track + of"],
+      "examples": [
+        { "english": "I keep track of my study hours in a spreadsheet.", "spanish": "Llevo la cuenta de mis horas de estudio en una hoja de cálculo.", "context": "study", "isPrimary": true },
+        { "english": "Keep track of the versions you install.", "spanish": "Lleva el seguimiento de las versiones que instalas.", "context": "software-development" }
+      ],
+      "tags": ["organization", "collocations"]
+    },
+    {
+      "id": "as-a-matter-of-fact",
+      "expression": "as a matter of fact",
+      "meaning": "de hecho, en realidad",
+      "explanation": "A slightly formal way to add information that is relevant and surprising, similar to actually.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["as a matter of fact + clause"],
+      "examples": [
+        { "english": "As a matter of fact, the fix is already in production.", "spanish": "De hecho, la corrección ya está en producción.", "context": "software-development", "isPrimary": true },
+        { "english": "I was going to call you. As a matter of fact, I have news.", "spanish": "Iba a llamarte. De hecho, tengo noticias.", "context": "general" }
+      ],
+      "tags": ["connectors", "formal"]
+    },
+    {
+      "id": "in-the-long-run",
+      "expression": "in the long run",
+      "meaning": "a largo plazo, con el tiempo",
+      "explanation": "Used to talk about the effect of something over a long period of time.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["in the long run + clause"],
+      "examples": [
+        { "english": "Writing tests saves time in the long run.", "spanish": "Escribir tests ahorra tiempo a largo plazo.", "context": "software-development", "isPrimary": true },
+        { "english": "Learning a little every day pays off in the long run.", "spanish": "Aprender un poco cada día compensa a largo plazo.", "context": "study" }
+      ],
+      "tags": ["connectors", "time"]
+    },
+    {
+      "id": "on-second-thought",
+      "expression": "on second thought",
+      "meaning": "en realidad, ahora que lo pienso",
+      "explanation": "Used to introduce a change of opinion. With you it becomes on second thoughts.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["on second thought(s) + clause"],
+      "examples": [
+        { "english": "On second thought, let's postpone it to next week.", "spanish": "Ahora que lo pienso, pospongámoslo a la semana que viene.", "context": "general", "isPrimary": true },
+        { "english": "On second thoughts, I'd rather stay home tonight.", "spanish": "Al final, preferiría quedarme en casa esta noche.", "context": "general" }
+      ],
+      "tags": ["connectors", "decisions"]
+    },
+    {
+      "id": "rule-of-thumb",
+      "expression": "rule of thumb",
+      "meaning": "regla empírica, regla orientativa",
+      "explanation": "A practical rule that is usually true but not exact. Plurals are rules of thumb, not rules of thumbs.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["a + rule of thumb + is that"],
+      "examples": [
+        { "english": "As a rule of thumb, a reply takes two working days.", "spanish": "Como regla orientativa, una respuesta tarda dos días laborables.", "context": "work", "isPrimary": true },
+        { "english": "The rule of thumb here is: measure before you change anything.", "spanish": "La regla empírica aquí es: mide antes de cambiar algo.", "context": "software-development" }
+      ],
+      "tags": ["idiom", "advice"]
+    }
+  ]
+}

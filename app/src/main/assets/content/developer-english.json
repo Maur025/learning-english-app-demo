@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "pack": {
+    "id": "developer-english",
+    "name": "Developer English",
+    "description": "Inglés técnico para desarrollar software: proceso, calidad, despliegue y operaciones.",
+    "version": 1,
+    "language": "en",
+    "source": "Proyecto Learning English App"
+  },
+  "expressions": [
+    {
+      "id": "ship",
+      "expression": "ship",
+      "meaning": "lanzar, publicar (una funcionalidad)",
+      "explanation": "In software, to send a feature to production. A ship is also the noun for a boat.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["ship + feature/release", "ship + on friday"],
+      "examples": [
+        { "english": "We ship the new dashboard on Friday.", "spanish": "Publicamos el nuevo panel el viernes.", "context": "software-development", "isPrimary": true },
+        { "english": "Shipping early and fixing fast beats polishing forever.", "spanish": "Publicar pronto y corregir rápido es mejor que pulir eternamente.", "context": "software-development" }
+      ],
+      "tags": ["delivery", "software-development"]
+    },
+    {
+      "id": "deploy",
+      "expression": "deploy",
+      "meaning": "desplegar, implementar en producción",
+      "explanation": "To install and start a program or a service so that real users can use it.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["deploy + service/feature", "deploy + to production"],
+      "examples": [
+        { "english": "We deploy to production twice a week.", "spanish": "Desplegamos a producción dos veces por semana.", "context": "software-development", "isPrimary": true },
+        { "english": "The service was deployed but never configured.", "spanish": "El servicio se desplegó pero nunca se configuró.", "context": "software-development" }
+      ],
+      "tags": ["delivery", "software-development"]
+    },
+    {
+      "id": "roll-back",
+      "expression": "roll back",
+      "meaning": "revertir, deshacer (un despliegue)",
+      "explanation": "To undo a change that is already live, usually to restore the previous working version.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["roll back + release/change", "roll back + to"],
+      "examples": [
+        { "english": "We rolled back the release after ten minutes.", "spanish": "Revertimos la publicación después de diez minutos.", "context": "software-development", "isPrimary": true },
+        { "english": "If the migration fails, roll back to the previous schema.", "spanish": "Si la migración falla, revierte al esquema anterior.", "context": "software-development" }
+      ],
+      "tags": ["delivery", "software-development"]
+    },
+    {
+      "id": "debug",
+      "expression": "debug",
+      "meaning": "depurar, encontrar y corregir errores",
+      "explanation": "To find the cause of a problem in a program and fix it. Unlike fix, it implies looking for the reason.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["debug + issue/bug", "debug + with logs"],
+      "examples": [
+        { "english": "It took me a whole afternoon to debug this race condition.", "spanish": "Me llevó una tarde entera depurar esta condición de carrera.", "context": "software-development", "isPrimary": true },
+        { "english": "Add a log line and debug it with a smaller input.", "spanish": "Añade un log y depúralo con una entrada más pequeña.", "context": "software-development" }
+      ],
+      "tags": ["quality", "software-development"]
+    },
+    {
+      "id": "refactor",
+      "expression": "refactor",
+      "meaning": "refactorizar, reescribir el código sin cambiar su comportamiento",
+      "explanation": "To improve the internal structure of code without changing what it does for users.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["refactor + code/module", "refactor + for readability"],
+      "examples": [
+        { "english": "We refactored the payment module to make it testable.", "spanish": "Refactorizamos el módulo de pagos para que fuera testeable.", "context": "software-development", "isPrimary": true },
+        { "english": "Refactoring without tests is just rewriting code.", "spanish": "Refactorizar sin tests es solo reescribir código.", "context": "software-development" }
+      ],
+      "tags": ["code-quality", "software-development"]
+    },
+    {
+      "id": "code-review",
+      "expression": "code review",
+      "meaning": "revisión de código",
+      "explanation": "The habit of having a colleague read a change before it is merged, to catch problems and share knowledge.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["a code review + of/for", "request a code review"],
+      "examples": [
+        { "english": "Every change needs a code review before merging.", "spanish": "Cada cambio necesita una revisión de código antes de fusionarlo.", "context": "software-development", "isPrimary": true },
+        { "english": "The code review caught an unchecked null value.", "spanish": "La revisión de código detectó un valor nulo sin comprobar.", "context": "software-development" }
+      ],
+      "tags": ["process", "software-development"]
+    },
+    {
+      "id": "pull-request",
+      "expression": "pull request",
+      "meaning": "pull request (solicitud de fusión de cambios)",
+      "explanation": "In GitHub and GitLab, a request to merge your branch into another one. In everyday English, pull request can also mean asking for something.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["open/a pull request + for", "comment on a pull request"],
+      "examples": [
+        { "english": "Open a pull request and ask two people to review it.", "spanish": "Abre una pull request y pide a dos personas que la revisen.", "context": "software-development", "isPrimary": true },
+        { "english": "The pull request is still waiting for approval.", "spanish": "La pull request sigue esperando aprobación.", "context": "software-development" }
+      ],
+      "tags": ["process", "software-development"]
+    },
+    {
+      "id": "merge-conflict",
+      "expression": "merge conflict",
+      "meaning": "conflicto de fusión",
+      "explanation": "Git cannot join two versions of the same file automatically because both sides changed the same lines.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["resolve a merge conflict", "a merge conflict + in"],
+      "examples": [
+        { "english": "I lost an hour resolving a merge conflict in the config file.", "spanish": "Perdí una hora resolviendo un conflicto de fusión en el archivo de configuración.", "context": "software-development", "isPrimary": true },
+        { "english": "A merge conflict means somebody has to decide which version wins.", "spanish": "Un conflicto de fusión significa que alguien tiene que decidir qué versión gana.", "context": "software-development" }
+      ],
+      "tags": ["process", "problems", "software-development"]
+    },
+    {
+      "id": "breaking-change",
+      "expression": "breaking change",
+      "meaning": "cambio incompatible",
+      "explanation": "A change that makes existing code stop working, such as renaming a method or removing a field.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["a breaking change + in/for", "avoid breaking changes"],
+      "examples": [
+        { "english": "Renaming that field would be a breaking change for our clients.", "spanish": "Renombrar ese campo sería un cambio incompatible para nuestros clientes.", "context": "software-development", "isPrimary": true },
+        { "english": "Document every breaking change in the release notes.", "spanish": "Documenta cada cambio incompatible en las notas de la versión.", "context": "software-development" }
+      ],
+      "tags": ["api-design", "software-development"]
+    },
+    {
+      "id": "technical-debt",
+      "expression": "technical debt",
+      "meaning": "deuda técnica",
+      "explanation": "The future cost of a quick decision made only to ship faster, like a shortcut that has to be paid back later.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["accumulate/pay technical debt", "technical debt + in"],
+      "examples": [
+        { "english": "Skipping the tests was quick, but it left us with technical debt.", "spanish": "Omitir los tests fue rápido, pero nos dejó deuda técnica.", "context": "software-development", "isPrimary": true },
+        { "english": "If you never pay technical debt, it compounds every sprint.", "spanish": "Si nunca pagas la deuda técnica, se acumula cada sprint.", "context": "software-development" }
+      ],
+      "tags": ["planning", "software-development"]
+    },
+    {
+      "id": "hotfix",
+      "expression": "hotfix",
+      "meaning": "parche urgente",
+      "explanation": "A small correction released quickly to fix a serious problem in production, normally skipping the normal release cycle.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["release/deploy a hotfix", "a hotfix + for"],
+      "examples": [
+        { "english": "We shipped a hotfix for the payment bug within the hour.", "spanish": "Publicamos un parche urgente para el fallo de pago en menos de una hora.", "context": "software-development", "isPrimary": true },
+        { "english": "A hotfix is not a substitute for a proper test.", "spanish": "Un parche urgente no sustituye a un test adecuado.", "context": "software-development" }
+      ],
+      "tags": ["delivery", "software-development"]
+    },
+    {
+      "id": "flaky-test",
+      "expression": "flaky test",
+      "meaning": "test inestable, test que falla a veces",
+      "explanation": "A test that passes and fails without any change in the code, usually because it depends on time, order or the network.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["a flaky test + in", "quarantine flaky tests"],
+      "examples": [
+        { "english": "This test is flaky: it fails once every twenty runs.", "spanish": "Este test es inestable: falla una de cada veinte ejecuciones.", "context": "software-development", "isPrimary": true },
+        { "english": "We quarantined two flaky tests until somebody fixes them.", "spanish": "Pusimos en cuarentena dos tests inestables hasta que alguien los arregle.", "context": "software-development" }
+      ],
+      "tags": ["quality", "testing", "software-development"]
+    },
+    {
+      "id": "end-to-end",
+      "expression": "end-to-end test",
+      "meaning": "prueba de extremo a extremo",
+      "explanation": "A test that exercises the whole system the way a user does, from the interface to the database.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["an end-to-end test + for", "end-to-end coverage"],
+      "examples": [
+        { "english": "One end-to-end test covers the whole checkout flow.", "spanish": "Un test de extremo a extremo cubre todo el proceso de compra.", "context": "software-development", "isPrimary": true },
+        { "english": "End-to-end tests are slow, so we run them only at night.", "spanish": "Los tests de extremo a extremo son lentos, así que los ejecutamos solo por la noche.", "context": "software-development" }
+      ],
+      "tags": ["testing", "software-development"]
+    },
+    {
+      "id": "edge-case",
+      "expression": "edge case",
+      "meaning": "caso límite, caso extremo",
+      "explanation": "An unusual input or situation at the limit of what the system should handle, such as an empty list or a very long string.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["handle/cover an edge case", "an edge case + of/in"],
+      "examples": [
+        { "english": "An empty list is an edge case we never tested.", "spanish": "Una lista vacía es un caso límite que nunca probamos.", "context": "software-development", "isPrimary": true },
+        { "english": "Every edge case in this flow is documented here.", "spanish": "Todos los casos límite de este flujo están documentados aquí.", "context": "software-development" }
+      ],
+      "tags": ["testing", "software-development"]
+    },
+    {
+      "id": "bottleneck",
+      "expression": "bottleneck",
+      "meaning": "cuello de botella, punto de bloqueo",
+      "explanation": "The single step that limits how fast the whole process can go. Originally a physical narrow part of a bottle.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["a bottleneck + in", "remove/identify the bottleneck"],
+      "examples": [
+        { "english": "Manual review is the bottleneck in our release process.", "spanish": "La revisión manual es el cuello de botella de nuestro proceso de publicación.", "context": "software-development", "isPrimary": true },
+        { "english": "We doubled the servers and the bottleneck moved to the database.", "spanish": "Duplicamos los servidores y el cuello de botella pasó a la base de datos.", "context": "software-development" }
+      ],
+      "tags": ["performance", "software-development"]
+    },
+    {
+      "id": "throughput",
+      "expression": "throughput",
+      "meaning": "caudal, rendimiento (trabajo por unidad de tiempo)",
+      "explanation": "How much work a system finishes in a period of time. High throughput is not the same as low latency.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["increase/improve throughput", "a throughput + of"],
+      "examples": [
+        { "english": "Batching improved throughput but increased latency.", "spanish": "El procesamiento por lotes mejoró el caudal pero aumentó la latencia.", "context": "software-development", "isPrimary": true },
+        { "english": "The goal was a throughput of ten thousand events per second.", "spanish": "El objetivo era un caudal de diez mil eventos por segundo.", "context": "software-development" }
+      ],
+      "tags": ["performance", "software-development"]
+    },
+    {
+      "id": "scope-creep",
+      "expression": "scope creep",
+      "meaning": "expansión del alcance, proyecto que se agranda",
+      "explanation": "When the requirements of a project keep growing while the deadline stays the same.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["scope creep + into", "prevent/avoid scope creep"],
+      "examples": [
+        { "english": "Scope creep turned a two-week task into a two-month project.", "spanish": "La expansión del alcance convirtió una tarea de dos semanas en un proyecto de dos meses.", "context": "project-management", "isPrimary": true },
+        { "english": "Writing down what is out of scope is the best cure for scope creep.", "spanish": "Anotar qué queda fuera es el mejor remedio contra la expansión del alcance.", "context": "project-management" }
+      ],
+      "tags": ["project-management", "business"]
+    },
+    {
+      "id": "code-smell",
+      "expression": "code smell",
+      "meaning": "mal olor de código, señal de mal diseño",
+      "explanation": "Something in the code that does not break it today but suggests a design problem, such as duplicated logic.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["a code smell + in", "ignore/fix code smells"],
+      "examples": [
+        { "english": "Duplicated validation is a code smell, not a pattern.", "spanish": "La validación duplicada es un mal olor de código, no un patrón.", "context": "software-development", "isPrimary": true },
+        { "english": "The reviewer flagged two code smells in the same class.", "spanish": "El revisor señaló dos malos olores de código en la misma clase.", "context": "software-development" }
+      ],
+      "tags": ["code-quality", "software-development"]
+    },
+    {
+      "id": "off-by-one-error",
+      "expression": "off-by-one error",
+      "meaning": "error de uno en los límites (índice incorrecto)",
+      "explanation": "A classic bug where a loop or an index goes one step too far, usually a list that ends with an exception.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["an off-by-one error + in", "guard against off-by-one errors"],
+      "examples": [
+        { "english": "An off-by-one error made the loop read past the last element.", "spanish": "Un error de uno en los límites hizo que el bucle leyera más allá del último elemento.", "context": "software-development", "isPrimary": true },
+        { "english": "Two of the failing tests were plain off-by-one errors.", "spanish": "Dos de los tests que fallaban eran simples errores de índice.", "context": "software-development" }
+      ],
+      "tags": ["quality", "software-development"]
+    },
+    {
+      "id": "stack-trace",
+      "expression": "stack trace",
+      "meaning": "traza de la pila de llamadas",
+      "explanation": "The list of function calls that were running when a program failed, printed when it crashes.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["read a stack trace", "a stack trace + shows"],
+      "examples": [
+        { "english": "The stack trace shows the failure inside the parser.", "spanish": "La traza de la pila muestra el fallo dentro del parser.", "context": "software-development", "isPrimary": true },
+        { "english": "Read the stack trace from the bottom up to find the caller.", "spanish": "Lee la traza de abajo arriba para encontrar quién la llamó.", "context": "software-development" }
+      ],
+      "tags": ["debugging", "software-development"]
+    },
+    {
+      "id": "runbook",
+      "expression": "runbook",
+      "meaning": "manual de operaciones, guía de intervención",
+      "explanation": "A document that lists, step by step, what to do when an incident happens or a routine task must be repeated.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["follow/update a runbook", "a runbook + for"],
+      "examples": [
+        { "english": "The runbook says to disable the feature flag first.", "spanish": "El manual de operaciones dice que hay que desactivar primero la bandera de funcionalidad.", "context": "operations", "isPrimary": true },
+        { "english": "Every production database needs a runbook.", "spanish": "Toda base de datos en producción necesita un manual de operaciones.", "context": "operations" }
+      ],
+      "tags": ["operations", "software-development"]
+    },
+    {
+      "id": "on-call",
+      "expression": "on call",
+      "meaning": "de guardia, disponible por urgencias",
+      "explanation": "Being responsible for a system outside normal hours, in case an incident happens.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["be on call + this/tonight", "an on-call rotation"],
+      "examples": [
+        { "english": "I'm on call this weekend, so I keep my phone nearby.", "spanish": "Estoy de guardia este fin de semana, así que llevo el móvil cerca.", "context": "operations", "isPrimary": true },
+        { "english": "The on-call rotation gives each person one week in four.", "spanish": "La rotación de guardia da a cada persona una semana de cada cuatro.", "context": "work" }
+      ],
+      "tags": ["operations", "work"]
+    },
+    {
+      "id": "standup",
+      "expression": "standup",
+      "meaning": "reunión diaria de pie, reunión de estado",
+      "explanation": "A short daily meeting where each person says what they did, what they will do and what blocks them.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["have/attend a standup", "during the standup"],
+      "examples": [
+        { "english": "Keep the standup short and keep it standing up.", "spanish": "Mantén la reunión breve y hazla de pie.", "context": "agile", "isPrimary": true },
+        { "english": "We discuss architecture after the standup, not during it.", "spanish": "Discutimos la arquitectura después de la reunión diaria, no durante ella.", "context": "agile" }
+      ],
+      "tags": ["agile", "meetings", "work"]
+    },
+    {
+      "id": "retrospective",
+      "expression": "retrospective",
+      "meaning": "retrospectiva (revisión de un sprint)",
+      "explanation": "A meeting at the end of an iteration to look back at what worked and what did not, and agree on changes.",
+      "difficulty": "MEDIUM",
+      "level": "B1",
+      "patterns": ["hold/have a retrospective", "the retrospective + of/for"],
+      "examples": [
+        { "english": "In the retrospective we agreed to cap work in progress.", "spanish": "En la retrospectiva acordamos limitar el trabajo en curso.", "context": "agile", "isPrimary": true },
+        { "english": "A retrospective without concrete actions is just a chat.", "spanish": "Una retrospectiva sin acciones concretas es solo una charla.", "context": "agile" }
+      ],
+      "tags": ["agile", "meetings", "work"]
+    },
+    {
+      "id": "feature-flag",
+      "expression": "feature flag",
+      "meaning": "bandera de funcionalidad, interruptor de funcionalidad",
+      "explanation": "A switch in the code that turns a feature on or off without deploying again, often used to test safely.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["turn a feature flag + on/off", "behind a feature flag"],
+      "examples": [
+        { "english": "We released it behind a feature flag for 10% of users.", "spanish": "Lo lanzamos tras una bandera de funcionalidad para el 10 % de usuarios.", "context": "software-development", "isPrimary": true },
+        { "english": "Remove the feature flag once the new flow is stable.", "spanish": "Retira la bandera cuando el flujo nuevo sea estable.", "context": "software-development" }
+      ],
+      "tags": ["delivery", "software-development"]
+    },
+    {
+      "id": "cherry-pick",
+      "expression": "cherry-pick",
+      "meaning": "seleccionar cambios concretos (de Git)",
+      "explanation": "To apply only some commits from a branch. The verb pick is also used in reviews: pick the best ideas.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["cherry-pick + commit/change", "cherry-pick from + branch"],
+      "examples": [
+        { "english": "We cherry-picked the security fix onto the release branch.", "spanish": "Seleccionamos la corrección de seguridad en la rama de publicación.", "context": "software-development", "isPrimary": true },
+        { "english": "Cherry-picking a fix without its tests is a recipe for drift.", "spanish": "Seleccionar una corrección sin sus tests es una receta para divergir.", "context": "software-development" }
+      ],
+      "tags": ["version-control", "software-development"]
+    },
+    {
+      "id": "spike",
+      "expression": "spike",
+      "meaning": "sondeo, investigación técnica acotada",
+      "explanation": "A short piece of work whose only goal is to answer an open question or reduce uncertainty before committing to a solution.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["run/do a spike + on", "a time-boxed spike"],
+      "examples": [
+        { "english": "We did a two-day spike to see if the library could work for us.", "spanish": "Hicimos un sondeo de dos días para ver si la librería nos servía.", "context": "software-development", "isPrimary": true },
+        { "english": "A spike is not a prototype: it answers a question and ends.", "spanish": "Un sondeo no es un prototipo: responde a una pregunta y termina.", "context": "software-development" }
+      ],
+      "tags": ["agile", "project-management", "software-development"]
+    },
+    {
+      "id": "legacy-code",
+      "expression": "legacy code",
+      "meaning": "código heredado, código antiguo",
+      "explanation": "Code written long ago that still runs and that nobody dares to touch, usually without tests.",
+      "difficulty": "HARD",
+      "level": "B2",
+      "patterns": ["touch/rewrite legacy code", "a piece of legacy code"],
+      "examples": [
+        { "english": "The billing module is legacy code with no tests at all.", "spanish": "El módulo de facturación es código heredado sin ningún test.", "context": "software-development", "isPrimary": true },
+        { "english": "Wrap legacy code before you replace it.", "spanish": "Envuelve el código heredado antes de sustituirlo.", "context": "software-development" }
+      ],
+      "tags": ["code-quality", "software-development"]
+    }
+  ]
+}
