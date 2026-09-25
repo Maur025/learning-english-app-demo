@@ -4,9 +4,18 @@ Offline-first Android English-learning app (Kotlin + Jetpack Compose + Material 
 
 ## Current state
 
-- Phase 0 scaffold only: single `:app` module with template `MainActivity`, Compose theme, and sample tests. No domain, persistence, navigation, or content code yet.
+- Phases 0–3 done: scaffold + navigation skeleton, pure domain model, Room/DataStore persistence, and the content system (versioned JSON packs, parser, validator, idempotent importer, 56 bundled expressions).
+- No screens beyond the navigation skeleton and the template `HomeScreen`; no scheduler, exercise engine or ViewModels yet.
 - Work through the phased roadmap (README §73), one small vertical slice at a time (README §84–85), keeping the build green after each step.
-- Open decisions to validate against this toolchain before adopting: Room 2.x vs 3.x (README §10), DI approach (README §47), module split (README §15). Record all versions in `gradle/libs.versions.toml`.
+- Open decisions to validate against this toolchain before adopting: DI approach (README §47), module split (README §15). Room landed on 2.8.5 (README §10). Record all versions in `gradle/libs.versions.toml`.
+
+## Content packs
+
+- Bundled packs live in `app/src/main/assets/content/` and are listed in `BundledContent.FILES`; `BundledContentInstaller` runs them at startup, off the main thread.
+- JSON schema is version 1 (`ContentPackFile`): `pack` metadata + `expressions` with `patterns`, `examples` and `tags`. `difficulty` is `EASY`/`MEDIUM`/`HARD` and `level` is `A1`–`C2`.
+- The schema is validated before importing: `ContentPackValidator` returns all issues with their JSON path instead of failing on the first one. `BundledContentTest` fails the build if a bundled pack is invalid or if the total expression count leaves the 50–100 range (README §3 Phase 3 deliverable).
+- `RoomContentImporter` skips a pack whose installed `version` is greater or equal, and rewrites examples, patterns and tag links on every import, so re-importing converges instead of duplicating. Expression ids are namespaced as `<packId>/<localId>` because they are Room primary keys.
+- Add new content by editing the JSON and bumping `pack.version`; never by inserting rows from code.
 
 ## Build and verify
 
@@ -20,7 +29,7 @@ Offline-first Android English-learning app (Kotlin + Jetpack Compose + Material 
 
 ## Toolchain gotchas (AGP 9.4.1)
 
-- Only `com.android.application` + `org.jetbrains.kotlin.plugin.compose` plugins are applied. AGP 9 ships built-in Kotlin (KGP 2.2.10) — adding `org.jetbrains.kotlin.android` breaks the build.
+- Only `com.android.application` + `org.jetbrains.kotlin.plugin.compose` + `org.jetbrains.kotlin.plugin.serialization` plugins are applied. AGP 9 ships built-in Kotlin (KGP 2.2.10) — adding `org.jetbrains.kotlin.android` breaks the build. KSP and the serialization plugin share the `kotlin` version ref: move them together or the build breaks.
 - The build uses the new AGP 9 DSL (`compileSdk { version = release(37) }`, `optimization { enable = false }`). Don't rewrite it to legacy `compileSdk = 37` / `isMinifyEnabled` syntax.
 - `settings.gradle.kts` sets `FAIL_ON_PROJECT_REPOS` — never add repositories in module build scripts; declare dependencies via the version catalog.
 
