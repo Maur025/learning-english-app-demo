@@ -5,6 +5,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.example.learning.english.learning.english.app.data.content.AssetContentSource
+import com.example.learning.english.learning.english.app.data.content.BundledContentInstaller
+import com.example.learning.english.learning.english.app.data.content.ContentPackParser
+import com.example.learning.english.learning.english.app.data.content.RoomContentImporter
 import com.example.learning.english.learning.english.app.data.persistence.AppDatabase
 import com.example.learning.english.learning.english.app.data.preferences.DataStoreUserPreferencesRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomExpressionRepository
@@ -54,6 +58,16 @@ class AppContainer(context: Context) {
 
     val userPreferencesRepository: UserPreferencesRepository by lazy {
         DataStoreUserPreferencesRepository(preferencesDataStore)
+    }
+
+    val contentImporter: RoomContentImporter by lazy { RoomContentImporter(database) }
+
+    val contentInstaller: BundledContentInstaller by lazy {
+        BundledContentInstaller(
+            contentSource = AssetContentSource(applicationContext),
+            parser = ContentPackParser(),
+            importer = contentImporter,
+        )
     }
 
     private companion object {

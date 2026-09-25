@@ -32,6 +32,13 @@ interface ContentPackDao {
     @Query("SELECT id FROM content_packs WHERE id IN (:packIds)")
     suspend fun getExistingIds(packIds: List<String>): List<String>
 
+    /** Lectura puntual para la importación, que compara revisiones antes de escribir. */
+    @Query("SELECT * FROM content_packs WHERE id IN (:packIds)")
+    suspend fun getByIds(packIds: List<String>): List<ContentPackEntity>
+
+    @Query("SELECT COUNT(*) FROM content_packs")
+    suspend fun count(): Int
+
     @Query("DELETE FROM content_packs WHERE id = :packId")
     suspend fun deleteById(packId: String)
 }
