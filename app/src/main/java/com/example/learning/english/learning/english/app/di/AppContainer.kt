@@ -20,6 +20,9 @@ import com.example.learning.english.learning.english.app.domain.repository.Learn
 import com.example.learning.english.learning.english.app.domain.repository.ReviewRepository
 import com.example.learning.english.learning.english.app.domain.repository.SessionRepository
 import com.example.learning.english.learning.english.app.domain.repository.UserPreferencesRepository
+import com.example.learning.english.learning.english.app.domain.scheduler.ReviewScheduler
+import com.example.learning.english.learning.english.app.domain.scheduler.Sm2ReviewScheduler
+import com.example.learning.english.learning.english.app.domain.service.ReviewRecorder
 
 /**
  * Grafo de dependencias con inyección manual.
@@ -58,6 +61,16 @@ class AppContainer(context: Context) {
 
     val userPreferencesRepository: UserPreferencesRepository by lazy {
         DataStoreUserPreferencesRepository(preferencesDataStore)
+    }
+
+    val reviewScheduler: ReviewScheduler by lazy { Sm2ReviewScheduler() }
+
+    val reviewRecorder: ReviewRecorder by lazy {
+        ReviewRecorder(
+            scheduler = reviewScheduler,
+            learningStateRepository = learningStateRepository,
+            reviewRepository = reviewRepository,
+        )
     }
 
     val contentImporter: RoomContentImporter by lazy { RoomContentImporter(database) }
