@@ -15,6 +15,9 @@ import com.example.learning.english.learning.english.app.data.repository.RoomExp
 import com.example.learning.english.learning.english.app.data.repository.RoomLearningStateRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomReviewRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomSessionRepository
+import com.example.learning.english.learning.english.app.domain.engine.DailySessionPlanner
+import com.example.learning.english.learning.english.app.domain.engine.DefaultLearningEngine
+import com.example.learning.english.learning.english.app.domain.engine.LearningEngine
 import com.example.learning.english.learning.english.app.domain.engine.LearningStateProgressor
 import com.example.learning.english.learning.english.app.domain.exercise.AnswerEvaluator
 import com.example.learning.english.learning.english.app.domain.exercise.DefaultExerciseGenerator
@@ -85,6 +88,20 @@ class AppContainer(context: Context) {
     }
 
     val contentImporter: RoomContentImporter by lazy { RoomContentImporter(database) }
+
+    val dailySessionPlanner: DailySessionPlanner by lazy { DailySessionPlanner(exerciseGenerator) }
+
+    val learningEngine: LearningEngine by lazy {
+        DefaultLearningEngine(
+            planner = dailySessionPlanner,
+            exerciseGenerator = exerciseGenerator,
+            answerEvaluator = answerEvaluator,
+            reviewRecorder = reviewRecorder,
+            expressionRepository = expressionRepository,
+            learningStateRepository = learningStateRepository,
+            sessionRepository = sessionRepository,
+        )
+    }
 
     val contentInstaller: BundledContentInstaller by lazy {
         BundledContentInstaller(
