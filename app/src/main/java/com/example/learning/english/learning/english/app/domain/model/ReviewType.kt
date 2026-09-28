@@ -35,6 +35,19 @@ enum class ReviewType {
             PRODUCTION -> PRODUCTION_SECONDS
         }
 
+    /**
+     * Mismo nivel de exigencia en el eje de producción (README §41).
+     *
+     * Es lo que permite subir de nivel cuando la producción va por detrás del
+     * reconocimiento, sin cambiar el orden de dificultad del ejercicio.
+     */
+    val productionAlternative: ReviewType
+        get() = when (this) {
+            RECOGNITION, CLOZE, GUIDED_RECALL -> TRANSLATION
+            TRANSLATION -> PRODUCTION
+            PRODUCTION -> PRODUCTION
+        }
+
     companion object {
         const val RECOGNITION_SECONDS = 15
         const val CLOZE_SECONDS = 25
