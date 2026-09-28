@@ -4,10 +4,18 @@ Offline-first Android English-learning app (Kotlin + Jetpack Compose + Material 
 
 ## Current state
 
-- Phases 0–3 done: scaffold + navigation skeleton, pure domain model, Room/DataStore persistence, and the content system (versioned JSON packs, parser, validator, idempotent importer, 56 bundled expressions).
-- No screens beyond the navigation skeleton and the template `HomeScreen`; no scheduler, exercise engine or ViewModels yet.
+- Phases 0–6 done: scaffold + navigation skeleton, pure domain model, Room/DataStore persistence, the content system (versioned JSON packs, parser, validator, idempotent importer, 56 bundled expressions), the SM-2 scheduler, the exercise engine (generator + answer evaluator) and the learning engine (session planner, state progressor, `LearningEngine`).
+- No screens beyond the navigation skeleton and the template `HomeScreen`; no ViewModels yet (phases 7–8).
 - Work through the phased roadmap (README §73), one small vertical slice at a time (README §84–85), keeping the build green after each step.
 - Open decisions to validate against this toolchain before adopting: DI approach (README §47), module split (README §15). Room landed on 2.8.5 (README §10). Record all versions in `gradle/libs.versions.toml`.
+
+## Learning engine
+
+- `domain/engine/DailySessionPlanner` is pure: expressions + states + preferences + `now` in, `SessionPlan` out. It picks candidates in priority order (overdue, weak, production recall, new), caps new content when reviews pile up, and fills the daily budget by skipping steps that do not fit instead of truncating the tail. It validates each step with `ExerciseGenerator` because a type the content cannot support is not a valid step.
+- `domain/engine/LearningStateProgressor` is applied by `ReviewRecorder` on the state the scheduler already programmed, so `reviewCount` is counted and the interval is untouched. Scores use an exponential moving average because the model stores no per-axis counter; only the axis of the exercise moves, so recognition can never dilute production.
+- `ReviewRecorder` is the single write path for learning state. `DefaultLearningEngine` only loads, connects and persists.
+- `learning_sessions.currentPosition` is the index of the next unanswered exercise, so an interrupted session resumes exactly where it stopped. Additive migration `V1_TO_V2`; never add a destructive one.
+- `now`/timestamps are always explicit parameters — no injected `Clock`.
 
 ## Content packs
 

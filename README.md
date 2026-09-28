@@ -3377,8 +3377,8 @@ If the repository is empty, begin with Phase 0 and keep the first project struct
 [ ] Exercise model implemented
 [ ] Recognition exercise implemented
 [ ] Production/self-rating exercise implemented
-[ ] LearningEngine implemented
-[ ] Daily session generation implemented
+[x] LearningEngine implemented
+[x] Daily session generation implemented
 [ ] Onboarding implemented
 [ ] Home implemented
 [ ] Learn flow implemented
