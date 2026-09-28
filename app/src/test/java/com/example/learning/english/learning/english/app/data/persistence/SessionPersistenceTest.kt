@@ -36,10 +36,15 @@ class SessionPersistenceTest {
         database.close()
     }
 
-    private fun session(exercises: List<Exercise>, completedAt: Long? = 5_000L) = LearningSession(
+    private fun session(
+        exercises: List<Exercise>,
+        completedAt: Long? = 5_000L,
+        currentPosition: Int = exercises.size,
+    ) = LearningSession(
         id = sessionId,
         startedAt = 1_000L,
         completedAt = completedAt,
+        currentPosition = currentPosition,
         exercises = exercises,
     )
 
@@ -60,6 +65,20 @@ class SessionPersistenceTest {
         assertEquals(2, restored?.exercises?.size)
         assertEquals(listOf(0, 1), restored?.exercises?.map { it.position })
         assertTrue(restored?.isCompleted == true)
+    }
+
+    @Test
+    fun `the progress of an interrupted session survives a restart`() = runBlocking {
+        val exercises = listOf(exercise(0, "figure-out"), exercise(1, "run-into"))
+
+        repository.save(session(exercises, completedAt = null, currentPosition = 0))
+        repository.save(session(exercises, completedAt = null, currentPosition = 1))
+
+        val restored = repository.getById(sessionId)
+
+        assertEquals(1, restored?.currentPosition)
+        assertEquals("run-into", restored?.nextExercise?.expressionId?.value)
+        assertTrue(restored?.isCompleted == false)
     }
 
     @Test

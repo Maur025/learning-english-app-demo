@@ -68,19 +68,21 @@ fun ReviewEvent.toEntity(): ReviewEventEntity = ReviewEventEntity(
 )
 
 fun LearningSessionWithExercises.toDomain(): LearningSession =
-    session.toDomain().copy(exercises = exercises.map { it.toDomain() })
+    session.toDomain().copy(exercises = exercises.sortedBy { it.position }.map { it.toDomain() })
 
 /** Sesión sin ejercicios: suficiente para listados recientes. */
 fun LearningSessionEntity.toDomain(): LearningSession = LearningSession(
     id = SessionId(id),
     startedAt = startedAt,
     completedAt = completedAt,
+    currentPosition = currentPosition,
 )
 
 fun LearningSession.toEntity(): LearningSessionEntity = LearningSessionEntity(
     id = id.value,
     startedAt = startedAt,
     completedAt = completedAt,
+    currentPosition = currentPosition,
 )
 
 fun Exercise.toEntity(sessionId: SessionId): SessionExerciseEntity = SessionExerciseEntity(

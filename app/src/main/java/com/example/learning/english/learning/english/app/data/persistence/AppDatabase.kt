@@ -62,7 +62,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun learningSessionDao(): LearningSessionDao
 
     companion object {
-        const val SCHEMA_VERSION = 1
+        const val SCHEMA_VERSION = 2
         const val DATABASE_NAME = "learning-english.db"
 
         fun create(context: Context): AppDatabase =
