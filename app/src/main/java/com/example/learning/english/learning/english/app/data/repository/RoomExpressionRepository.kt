@@ -42,6 +42,9 @@ class RoomExpressionRepository(
     override suspend fun getById(expressionId: ExpressionId): Expression? =
         expressionDao.getById(expressionId.value)?.toDomain()
 
+    override suspend fun getAll(): List<Expression> =
+        expressionDao.getAll().map { it.toDomain() }
+
     override suspend fun upsertAll(expressions: List<Expression>) {
         if (expressions.isEmpty()) return
 

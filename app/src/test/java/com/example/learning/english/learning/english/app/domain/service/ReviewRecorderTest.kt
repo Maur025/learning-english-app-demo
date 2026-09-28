@@ -126,6 +126,8 @@ class ReviewRecorderTest {
         override suspend fun getByExpression(expressionId: ExpressionId): LearningState? =
             rows[expressionId.value]
 
+        override suspend fun getAll(): List<LearningState> = rows.values.toList()
+
         override suspend fun upsert(state: LearningState) {
             rows[state.expressionId.value] = state
         }

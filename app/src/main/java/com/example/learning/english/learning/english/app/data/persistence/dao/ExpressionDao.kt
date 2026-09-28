@@ -24,6 +24,14 @@ interface ExpressionDao {
     @Query("SELECT * FROM expressions ORDER BY phrase")
     fun observeAll(): Flow<List<ExpressionWithRelations>>
 
+    /**
+     * Instantánea de todo el contenido. La usa el motor de sesión, que necesita
+     * leer las expresiones y sus colecciones en un único momento consistente.
+     */
+    @Transaction
+    @Query("SELECT * FROM expressions ORDER BY phrase")
+    suspend fun getAll(): List<ExpressionWithRelations>
+
     @Transaction
     @Query("SELECT * FROM expressions WHERE packId = :packId ORDER BY phrase")
     fun observeByPack(packId: String): Flow<List<ExpressionWithRelations>>

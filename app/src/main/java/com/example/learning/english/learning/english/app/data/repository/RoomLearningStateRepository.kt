@@ -28,6 +28,9 @@ class RoomLearningStateRepository(
     override suspend fun getByExpression(expressionId: ExpressionId): LearningState? =
         learningStateDao.getByExpression(expressionId.value)?.toDomain()
 
+    override suspend fun getAll(): List<LearningState> =
+        learningStateDao.getAll().map { it.toDomain() }
+
     override suspend fun upsert(state: LearningState) {
         learningStateDao.upsert(state.toEntity())
     }

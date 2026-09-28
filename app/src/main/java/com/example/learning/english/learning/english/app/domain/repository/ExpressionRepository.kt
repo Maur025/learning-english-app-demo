@@ -14,5 +14,7 @@ interface ExpressionRepository {
 
     suspend fun getById(expressionId: ExpressionId): Expression?
 
+    suspend fun getAll(): List<Expression>
+
     suspend fun upsertAll(expressions: List<Expression>)
 }

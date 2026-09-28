@@ -156,6 +156,30 @@ class RoomExpressionRepositoryTest {
     }
 
     @Test
+    fun `reads a snapshot of the whole catalog with its relations`() = runBlocking {
+        repository.upsertAll(
+            listOf(
+                Fixtures.domainExpression(tags = setOf(Fixtures.tag("phrasal-verb"))),
+                Fixtures.domainExpression(id = "run-into", packId = "developer-english", phrase = "run into"),
+            ),
+        )
+
+        val snapshot = repository.getAll()
+
+        assertEquals(2, snapshot.size)
+        assertEquals(1, snapshot.first { it.id.value == Fixtures.EXPRESSION_ID }.examples.size)
+        assertEquals(
+            "phrasal-verb",
+            snapshot.first { it.id.value == Fixtures.EXPRESSION_ID }.tags.single().id.value,
+        )
+    }
+
+    @Test
+    fun `an empty catalog is an empty snapshot`() = runBlocking {
+        assertTrue(repository.getAll().isEmpty())
+    }
+
+    @Test
     fun `primary examples come first when reading content back`() = runBlocking {
         val primary = Fixtures.domainExample()
         val secondary = Example(

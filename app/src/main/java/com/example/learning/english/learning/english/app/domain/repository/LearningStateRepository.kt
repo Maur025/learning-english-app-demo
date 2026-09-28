@@ -11,6 +11,8 @@ interface LearningStateRepository {
 
     suspend fun getByExpression(expressionId: ExpressionId): LearningState?
 
+    suspend fun getAll(): List<LearningState>
+
     suspend fun upsert(state: LearningState)
 
     suspend fun upsertAll(states: List<LearningState>)

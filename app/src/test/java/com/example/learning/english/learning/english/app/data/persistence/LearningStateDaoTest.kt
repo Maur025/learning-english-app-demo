@@ -67,6 +67,18 @@ class LearningStateDaoTest {
     }
 
     @Test
+    fun `reads a snapshot of every learning state`() = runBlocking {
+        val dao = database.learningStateDao()
+        dao.upsert(Fixtures.learningStateEntity())
+        dao.upsert(Fixtures.learningStateEntity(expressionId = "run-into", nextReviewAt = 20_000L))
+
+        val snapshot = dao.getAll()
+
+        assertEquals(2, snapshot.size)
+        assertEquals(setOf(Fixtures.EXPRESSION_ID, "run-into"), snapshot.map { it.expressionId }.toSet())
+    }
+
+    @Test
     fun `counts states by stage`() = runBlocking {
         database.learningStateDao().upsert(Fixtures.learningStateEntity())
 

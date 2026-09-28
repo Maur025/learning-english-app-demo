@@ -18,6 +18,13 @@ interface LearningStateDao {
     @Query("SELECT * FROM learning_state")
     fun observeAll(): Flow<List<LearningStateEntity>>
 
+    /**
+     * Instantánea del estado de aprendizaje. El motor de sesión la cruza con el
+     * contenido en un único momento, en vez de leer expresión a expresión.
+     */
+    @Query("SELECT * FROM learning_state")
+    suspend fun getAll(): List<LearningStateEntity>
+
     @Query("SELECT * FROM learning_state WHERE expressionId = :expressionId")
     fun observeByExpression(expressionId: String): Flow<LearningStateEntity?>
 
