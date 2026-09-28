@@ -1,6 +1,7 @@
 package com.example.learning.english.learning.english.app.domain.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ReviewTypeTest {
@@ -52,5 +53,17 @@ class ReviewTypeTest {
         )
 
         assertEquals(ReviewSkill.PRODUCTION, exercise.skill)
+    }
+
+    @Test
+    fun `every review type has a positive time estimate`() {
+        ReviewType.entries.forEach { type ->
+            assertTrue("$type must have a time estimate", type.estimatedSeconds > 0)
+        }
+    }
+
+    @Test
+    fun `production costs more than recognition`() {
+        assertTrue(ReviewType.PRODUCTION.estimatedSeconds > ReviewType.RECOGNITION.estimatedSeconds)
     }
 }
