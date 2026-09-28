@@ -6,6 +6,7 @@ import com.example.learning.english.learning.english.app.domain.model.ReviewEven
 import com.example.learning.english.learning.english.app.domain.model.ReviewId
 import com.example.learning.english.learning.english.app.domain.model.ReviewRating
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
+import com.example.learning.english.learning.english.app.domain.engine.LearningStateProgressor
 import com.example.learning.english.learning.english.app.domain.model.SessionId
 import com.example.learning.english.learning.english.app.domain.repository.LearningStateRepository
 import com.example.learning.english.learning.english.app.domain.repository.ReviewRepository
@@ -17,14 +18,18 @@ import java.util.UUID
  *
  * 1. Carga el [LearningState] actual (o lo crea si la expresión es nueva).
  * 2. Calcula el próximo repaso con [ReviewScheduler].
- * 3. Persiste el nuevo estado (la fecha futura sobrevive al reinicio, §72).
- * 4. Registra el [ReviewEvent] histórico, append-only (§32), para que las
+ * 3. Actualiza puntuaciones y etapa con [LearningStateProgressor] sobre el estado
+ *    ya programado: el intervalo no se toca y el `reviewCount` ya está contado.
+ * 4. Persiste el nuevo estado (la fecha futura sobrevive al reinicio, §72).
+ * 5. Registra el [ReviewEvent] histórico, append-only (§32), para que las
  *    métricas y el debugging del scheduler no dependan del último score.
  *
- * `LearningEngine.registerAnswer` (Fase 6) delegará aquí parte de su trabajo.
+ * Es el único camino de escritura del estado de aprendizaje: el
+ * `LearningEngine.registerAnswer` (Fase 6) delega aquí todo su trabajo.
  */
 class ReviewRecorder(
     private val scheduler: ReviewScheduler,
+    private val progressor: LearningStateProgressor,
     private val learningStateRepository: LearningStateRepository,
     private val reviewRepository: ReviewRepository,
 ) {
@@ -38,7 +43,7 @@ class ReviewRecorder(
         responseTimeMs: Long? = null,
     ): LearningState {
         val previous = learningStateRepository.getByExpression(expressionId) ?: LearningState.new(expressionId)
-        val updated = scheduler.schedule(previous, rating, reviewedAt)
+        val updated = progressor.apply(scheduler.schedule(previous, rating, reviewedAt), reviewType, rating)
         learningStateRepository.upsert(updated)
         reviewRepository.record(
             ReviewEvent(

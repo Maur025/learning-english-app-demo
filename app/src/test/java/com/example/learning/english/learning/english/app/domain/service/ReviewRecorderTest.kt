@@ -8,6 +8,7 @@ import com.example.learning.english.learning.english.app.domain.model.ReviewRati
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
 import com.example.learning.english.learning.english.app.domain.model.SessionId
 import com.example.learning.english.learning.english.app.domain.repository.LearningStateRepository
+import com.example.learning.english.learning.english.app.domain.engine.LearningStateProgressor
 import com.example.learning.english.learning.english.app.domain.repository.ReviewRepository
 import com.example.learning.english.learning.english.app.domain.scheduler.Sm2ReviewScheduler
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +25,12 @@ class ReviewRecorderTest {
     private val scheduler = Sm2ReviewScheduler()
     private val learningStateRepository = FakeLearningStateRepository()
     private val reviewRepository = FakeReviewRepository()
-    private val recorder = ReviewRecorder(scheduler, learningStateRepository, reviewRepository)
+    private val recorder = ReviewRecorder(
+        scheduler = scheduler,
+        progressor = LearningStateProgressor(),
+        learningStateRepository = learningStateRepository,
+        reviewRepository = reviewRepository,
+    )
 
     @Test
     fun `records the review and schedules the expression for the first time`() = runTest {
@@ -44,25 +50,28 @@ class ReviewRecorderTest {
         assertEquals(ReviewRating.GOOD, event.rating)
         assertEquals(reviewedAt, event.reviewedAt)
         assertEquals(LearningStage.NEW, event.previousStage)
-        assertEquals(LearningStage.NEW, event.newStage)
+        assertEquals(LearningStage.SEEN, event.newStage)
         assertNull(event.sessionId)
         assertNull(event.responseTimeMs)
     }
 
     @Test
-    fun `reuses the existing learning state and preserves its stage`() = runTest {
+    fun `reuses the existing learning state and refines its score`() = runTest {
         learningStateRepository.upsert(
             LearningState.new(EXPRESSION_ID).copy(
                 stage = LearningStage.RECOGNIZED,
                 recognitionScore = 75,
+                reviewCount = 3,
+                currentIntervalDays = 2,
             ),
         )
 
         val updated = recorder.record(EXPRESSION_ID, ReviewType.CLOZE, ReviewRating.EASY, reviewedAt = 2_000L)
 
         assertEquals(LearningStage.RECOGNIZED, updated.stage)
-        assertEquals(75, updated.recognitionScore)
-        assertEquals(4, updated.currentIntervalDays)
+        assertEquals(84, updated.recognitionScore)
+        assertEquals(0, updated.productionScore)
+        assertEquals(7, updated.currentIntervalDays)
         assertEquals(ReviewType.CLOZE, reviewRepository.events.single().reviewType)
         assertEquals(LearningStage.RECOGNIZED, reviewRepository.events.single().previousStage)
     }
