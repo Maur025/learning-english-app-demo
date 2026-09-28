@@ -15,6 +15,9 @@ import com.example.learning.english.learning.english.app.data.repository.RoomExp
 import com.example.learning.english.learning.english.app.data.repository.RoomLearningStateRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomReviewRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomSessionRepository
+import com.example.learning.english.learning.english.app.domain.exercise.AnswerEvaluator
+import com.example.learning.english.learning.english.app.domain.exercise.DefaultExerciseGenerator
+import com.example.learning.english.learning.english.app.domain.exercise.ExerciseGenerator
 import com.example.learning.english.learning.english.app.domain.repository.ExpressionRepository
 import com.example.learning.english.learning.english.app.domain.repository.LearningStateRepository
 import com.example.learning.english.learning.english.app.domain.repository.ReviewRepository
@@ -64,6 +67,10 @@ class AppContainer(context: Context) {
     }
 
     val reviewScheduler: ReviewScheduler by lazy { Sm2ReviewScheduler() }
+
+    val exerciseGenerator: ExerciseGenerator by lazy { DefaultExerciseGenerator() }
+
+    val answerEvaluator: AnswerEvaluator by lazy { AnswerEvaluator() }
 
     val reviewRecorder: ReviewRecorder by lazy {
         ReviewRecorder(
