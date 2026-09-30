@@ -103,6 +103,9 @@ internal class FakeReviewRepository : ReviewRepository {
 
     override fun observeAll(): Flow<List<ReviewEvent>> = flowOf(events.toList())
 
+    override suspend fun getBySession(sessionId: SessionId): List<ReviewEvent> =
+        events.filter { it.sessionId == sessionId }.sortedBy { it.reviewedAt }
+
     override suspend fun record(event: ReviewEvent) {
         events += event
     }

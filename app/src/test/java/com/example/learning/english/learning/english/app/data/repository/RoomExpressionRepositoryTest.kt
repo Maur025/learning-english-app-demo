@@ -9,6 +9,8 @@ import com.example.learning.english.learning.english.app.domain.model.Expression
 import com.example.learning.english.learning.english.app.domain.model.LearningState
 import com.example.learning.english.learning.english.app.domain.model.PackId
 import com.example.learning.english.learning.english.app.domain.model.ReviewEvent
+import com.example.learning.english.learning.english.app.domain.model.ReviewId
+import com.example.learning.english.learning.english.app.domain.model.SessionId
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -221,6 +223,29 @@ class RoomExpressionRepositoryTest {
     }
 
     @Test
+    fun `review history can be read back one session at a time`() = runBlocking {
+        repository.upsertAll(listOf(Fixtures.domainExpression()))
+        val reviews = RoomReviewRepository(database.reviewEventDao())
+        reviews.record(Fixtures.domainReviewEvent(id = "review-1", reviewedAt = 3_000L, sessionId = SESSION_ID))
+        reviews.record(Fixtures.domainReviewEvent(id = "review-2", reviewedAt = 1_000L, sessionId = SESSION_ID))
+        reviews.record(Fixtures.domainReviewEvent(id = "review-3", reviewedAt = 2_000L, sessionId = "other"))
+
+        val mine = reviews.getBySession(SessionId(SESSION_ID))
+
+        assertEquals(listOf(ReviewId("review-2"), ReviewId("review-1")), mine.map { it.id })
+        assertTrue(mine.all { it.sessionId == SessionId(SESSION_ID) })
+    }
+
+    @Test
+    fun `a session without reviews reads back empty`() = runBlocking {
+        repository.upsertAll(listOf(Fixtures.domainExpression()))
+        val reviews = RoomReviewRepository(database.reviewEventDao())
+        reviews.record(Fixtures.domainReviewEvent(sessionId = "other"))
+
+        assertTrue(reviews.getBySession(SessionId(SESSION_ID)).isEmpty())
+    }
+
+    @Test
     fun `learning state and review history are stored through their own repositories`() = runBlocking {
         val learningStates = RoomLearningStateRepository(database.learningStateDao())
         val reviews = RoomReviewRepository(database.reviewEventDao())
@@ -235,5 +260,9 @@ class RoomExpressionRepositoryTest {
         assertEquals(LearningState.new(ExpressionId(Fixtures.EXPRESSION_ID)).productionScore, state?.productionScore)
         assertEquals(1, history.size)
         assertTrue(history.single().isCorrect)
+    }
+
+    private companion object {
+        const val SESSION_ID = "session-1"
     }
 }

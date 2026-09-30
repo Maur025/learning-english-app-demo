@@ -14,3 +14,13 @@ enum class LearningStage {
     PRODUCTIVE,
     MASTERED,
 }
+
+/**
+ * `true` cuando llegar a esta etapa desde [stage] es avanzar en la escalera.
+ *
+ * El orden de las constantes es la progresión conceptual (§3.2), así que el
+ * ordinal compara etapas. Se expone como función para que quien lee no tenga que
+ * saber eso: la progresión puede retroceder cuando la expresión se olvida, y una
+ * comparación desnuda no lo distingue de un empate.
+ */
+fun LearningStage.advancedFrom(stage: LearningStage): Boolean = stage.ordinal < ordinal

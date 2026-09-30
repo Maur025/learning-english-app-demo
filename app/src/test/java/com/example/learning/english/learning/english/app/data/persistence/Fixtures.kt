@@ -23,6 +23,7 @@ import com.example.learning.english.learning.english.app.domain.model.ReviewEven
 import com.example.learning.english.learning.english.app.domain.model.ReviewId
 import com.example.learning.english.learning.english.app.domain.model.ReviewRating
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
+import com.example.learning.english.learning.english.app.domain.model.SessionId
 import com.example.learning.english.learning.english.app.domain.model.Tag
 import com.example.learning.english.learning.english.app.domain.model.TagId
 
@@ -169,13 +170,14 @@ internal object Fixtures {
         expressionId: String = EXPRESSION_ID,
         reviewedAt: Long = 1_000L,
         rating: ReviewRating = ReviewRating.GOOD,
+        sessionId: String? = null,
     ) = ReviewEvent(
         id = ReviewId(id),
         expressionId = ExpressionId(expressionId),
         reviewType = ReviewType.RECOGNITION,
         rating = rating,
         reviewedAt = reviewedAt,
-        sessionId = null,
+        sessionId = sessionId?.let { SessionId(it) },
         responseTimeMs = 2_500L,
         previousStage = LearningStage.NEW,
         newStage = LearningStage.SEEN,
