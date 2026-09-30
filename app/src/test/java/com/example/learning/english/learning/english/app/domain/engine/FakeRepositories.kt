@@ -24,9 +24,12 @@ import kotlinx.coroutines.flow.flowOf
  */
 internal class FakeExpressionRepository(
     expressions: List<Expression> = emptyList(),
+    /** Ids ya revisados: lo único que hace falta para saber cuántas quedan nuevas. */
+    reviewedExpressionIds: Set<ExpressionId> = emptySet(),
 ) : ExpressionRepository {
 
     private val rows = expressions.associateBy { it.id.value }.toMutableMap()
+    private val reviewed = reviewedExpressionIds.mapTo(mutableSetOf()) { it.value }
 
     override fun observeAll(): Flow<List<Expression>> = flowOf(rows.values.toList())
 
@@ -39,8 +42,9 @@ internal class FakeExpressionRepository(
 
     override suspend fun getAll(): List<Expression> = rows.values.sortedBy { it.phrase }
 
+    /** Como en el resto de dobles del motor, sin filtro por pack. */
     override fun observeNewCount(packIds: Set<PackId>): Flow<Int> =
-        flowOf(rows.values.count { it.packId in packIds })
+        flowOf(rows.values.count { it.id.value !in reviewed })
 
     override suspend fun upsertAll(expressions: List<Expression>) {
         expressions.forEach { rows[it.id.value] = it }
@@ -62,10 +66,24 @@ internal class FakeLearningStateRepository(
 
     override suspend fun getAll(): List<LearningState> = rows.values.toList()
 
-    override fun observeDueCount(now: Long, packIds: Set<PackId>): Flow<Int> = flowOf(0)
+    /**
+     * Agregados sin filtro por pack: los tests del motor no selecciona packs, así
+     * que un doble que respetara el filtro solo añadiría ruido. Los dobles de la
+     * capa de UI sí lo respetan porque ahí es justo lo que se prueba.
+     */
+    override fun observeDueCount(now: Long, packIds: Set<PackId>): Flow<Int> =
+        flowOf(rows.values.count { it.nextReviewAt != null && it.nextReviewAt <= now })
 
-    override fun observeSkillAverages(packIds: Set<PackId>): Flow<SkillAverages> =
-        flowOf(SkillAverages.EMPTY)
+    override fun observeSkillAverages(packIds: Set<PackId>): Flow<SkillAverages> {
+        val reviewed = rows.values.filter { it.reviewCount > 0 }
+        if (reviewed.isEmpty()) return flowOf(SkillAverages.EMPTY)
+        return flowOf(
+            SkillAverages.fromScores(
+                recognition = reviewed.sumOf { it.recognitionScore }.toDouble() / reviewed.size,
+                production = reviewed.sumOf { it.productionScore }.toDouble() / reviewed.size,
+            ),
+        )
+    }
 
     override suspend fun upsert(state: LearningState) {
         rows[state.expressionId.value] = state

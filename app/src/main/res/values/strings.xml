@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">LearningEnglishApp</string>
     <string name="home_title">Learning English</string>
+    <string name="home_todays_goal">Today\'s goal</string>
+    <string name="home_due_reviews">Due reviews</string>
+    <string name="home_new_expressions">New expressions</string>
+    <string name="home_recognition">Recognition</string>
+    <string name="home_production">Production</string>
+    <string name="home_start_session">Start today\'s session</string>
+    <string name="home_continue_session">Continue session</string>
+    <string name="home_continue_session_progress">Continue session (%d answered)</string>
+    <string name="home_nothing_pending">Nothing is due today. Come back tomorrow for new reviews.</string>
+    <string name="home_preparing_content">Preparing your content…</string>
+    <plurals name="home_daily_goal_minutes">
+        <item quantity="one">%d minute a day</item>
+        <item quantity="other">%d minutes a day</item>
+    </plurals>
 
     <string name="onboarding_title">Learn expressions, not isolated words</string>
     <string name="onboarding_approach">Each expression is a phrase with a meaning, a pattern and real examples. You will recognize it first and only later produce it yourself, with spaced reviews that adapt to what you forget.</string>
@@ -16,4 +30,7 @@
         <item quantity="one">%d expression</item>
         <item quantity="other">%d expressions</item>
     </plurals>
+
+    <string name="practice_title">Practice</string>
+    <string name="practice_coming_soon">Session %1$s is saved. Exercises arrive with the next phase.</string>
 </resources>
