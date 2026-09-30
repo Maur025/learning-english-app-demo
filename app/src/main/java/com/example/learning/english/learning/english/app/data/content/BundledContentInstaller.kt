@@ -73,7 +73,7 @@ class BundledContentInstaller(
             return@withContext FileResult.Failed(ContentImportFailure(fileName, issues))
         }
 
-        val result = importer.import(ContentPackMapper.toContentPack(file, clock()))
+        val result = importer.import(ContentPackMapper.toParsedContentPack(file, clock()))
         when (result) {
             is PackImportResult.Imported -> FileResult.Imported(result)
             is PackImportResult.Skipped -> FileResult.Skipped(result)

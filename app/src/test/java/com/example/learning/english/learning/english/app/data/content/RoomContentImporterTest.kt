@@ -117,7 +117,7 @@ class RoomContentImporterTest {
         packId: String = PACK_ID,
         version: Int = 1,
         withoutSecondExample: Boolean = false,
-    ): ContentPack {
+    ): ParsedContentPack {
         val examples = buildList {
             add(
                 ExampleFile(
@@ -146,7 +146,7 @@ class RoomContentImporterTest {
                 ),
             ),
         )
-        return ContentPackMapper.toContentPack(file, timestamp = 1_000L)
+        return ContentPackMapper.toParsedContentPack(file, timestamp = 1_000L)
     }
 
     private companion object {

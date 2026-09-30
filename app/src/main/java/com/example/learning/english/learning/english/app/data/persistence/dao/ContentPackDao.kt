@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.learning.english.learning.english.app.data.persistence.entity.ContentPackEntity
+import com.example.learning.english.learning.english.app.data.persistence.relation.ContentPackWithCount
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -16,6 +17,22 @@ interface ContentPackDao {
 
     @Query("SELECT * FROM content_packs ORDER BY name")
     fun observeAll(): Flow<List<ContentPackEntity>>
+
+    /**
+     * Packs con su conteo de expresiones, para las pantallas que ofrecen elegir
+     * contenido. El conteo sale de un subselect en la misma consulta: una fila por
+     * pack y sin Flows adicionales que puedan desincronizarse entre sí.
+     */
+    @Query(
+        """
+        SELECT p.*, (
+            SELECT COUNT(*) FROM expressions e WHERE e.packId = p.id
+        ) AS expressionCount
+        FROM content_packs p
+        ORDER BY p.name
+        """,
+    )
+    fun observeAllWithCount(): Flow<List<ContentPackWithCount>>
 
     @Query("SELECT * FROM content_packs WHERE id = :packId")
     fun observeById(packId: String): Flow<ContentPackEntity?>

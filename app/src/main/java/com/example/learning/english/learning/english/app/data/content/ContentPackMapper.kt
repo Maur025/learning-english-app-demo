@@ -22,8 +22,13 @@ data class PackMetadata(
     val source: String?,
 )
 
-/** Un pack de contenido traducido al dominio, sin referencias a Room. */
-data class ContentPack(
+/**
+ * Un pack de contenido traducido al dominio, listo para importar.
+ *
+ * El prefijo `Parsed` reserva el nombre `ContentPack` para el modelo de dominio,
+ * que es el que la UI ve una vez instalado (README §27, §78).
+ */
+data class ParsedContentPack(
     val metadata: PackMetadata,
     val expressions: List<Expression>,
 )
@@ -41,9 +46,9 @@ data class ContentPack(
  */
 object ContentPackMapper {
 
-    fun toContentPack(file: ContentPackFile, timestamp: Long): ContentPack {
+    fun toParsedContentPack(file: ContentPackFile, timestamp: Long): ParsedContentPack {
         val packId = PackId(file.pack.id)
-        return ContentPack(
+        return ParsedContentPack(
             metadata = PackMetadata(
                 id = packId,
                 name = file.pack.name,

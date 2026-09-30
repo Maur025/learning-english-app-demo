@@ -11,6 +11,7 @@ import com.example.learning.english.learning.english.app.data.content.ContentPac
 import com.example.learning.english.learning.english.app.data.content.RoomContentImporter
 import com.example.learning.english.learning.english.app.data.persistence.AppDatabase
 import com.example.learning.english.learning.english.app.data.preferences.DataStoreUserPreferencesRepository
+import com.example.learning.english.learning.english.app.data.repository.RoomContentPackRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomExpressionRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomLearningStateRepository
 import com.example.learning.english.learning.english.app.data.repository.RoomReviewRepository
@@ -22,6 +23,7 @@ import com.example.learning.english.learning.english.app.domain.engine.LearningS
 import com.example.learning.english.learning.english.app.domain.exercise.AnswerEvaluator
 import com.example.learning.english.learning.english.app.domain.exercise.DefaultExerciseGenerator
 import com.example.learning.english.learning.english.app.domain.exercise.ExerciseGenerator
+import com.example.learning.english.learning.english.app.domain.repository.ContentPackRepository
 import com.example.learning.english.learning.english.app.domain.repository.ExpressionRepository
 import com.example.learning.english.learning.english.app.domain.repository.LearningStateRepository
 import com.example.learning.english.learning.english.app.domain.repository.ReviewRepository
@@ -52,6 +54,10 @@ class AppContainer(context: Context) {
 
     val expressionRepository: ExpressionRepository by lazy {
         RoomExpressionRepository(database)
+    }
+
+    val contentPackRepository: ContentPackRepository by lazy {
+        RoomContentPackRepository(database.contentPackDao())
     }
 
     val learningStateRepository: LearningStateRepository by lazy {

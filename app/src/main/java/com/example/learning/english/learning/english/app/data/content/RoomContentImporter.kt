@@ -35,7 +35,7 @@ class RoomContentImporter(
     private val clock: () -> Long = System::currentTimeMillis,
 ) {
 
-    suspend fun import(pack: ContentPack): PackImportResult {
+    suspend fun import(pack: ParsedContentPack): PackImportResult {
         val installed = database.contentPackDao()
             .getByIds(listOf(pack.metadata.id.value))
             .singleOrNull()

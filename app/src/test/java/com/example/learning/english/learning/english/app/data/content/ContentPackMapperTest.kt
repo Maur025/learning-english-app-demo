@@ -8,7 +8,7 @@ class ContentPackMapperTest {
 
     @Test
     fun `maps pack metadata`() {
-        val pack = ContentPackMapper.toContentPack(file(), timestamp = 1_000L)
+        val pack = ContentPackMapper.toParsedContentPack(file(), timestamp = 1_000L)
 
         assertEquals("core-english", pack.metadata.id.value)
         assertEquals("Core English", pack.metadata.name)
@@ -19,14 +19,14 @@ class ContentPackMapperTest {
 
     @Test
     fun `namespaces expression ids with the pack`() {
-        val pack = ContentPackMapper.toContentPack(file(), timestamp = 1_000L)
+        val pack = ContentPackMapper.toParsedContentPack(file(), timestamp = 1_000L)
 
         assertEquals("core-english/figure-out", pack.expressions.single().id.value)
     }
 
     @Test
     fun `derives stable ids for examples and patterns`() {
-        val pack = ContentPackMapper.toContentPack(file(), timestamp = 1_000L)
+        val pack = ContentPackMapper.toParsedContentPack(file(), timestamp = 1_000L)
 
         val expression = pack.expressions.single()
         assertEquals("core-english/figure-out/examples/1", expression.examples.single().id.value)
@@ -35,7 +35,7 @@ class ContentPackMapperTest {
 
     @Test
     fun `applies the same timestamp to every imported row`() {
-        val pack = ContentPackMapper.toContentPack(file(), timestamp = 4_242L)
+        val pack = ContentPackMapper.toParsedContentPack(file(), timestamp = 4_242L)
 
         val expression = pack.expressions.single()
         assertEquals(4_242L, expression.createdAt)
@@ -44,7 +44,7 @@ class ContentPackMapperTest {
 
     @Test
     fun `the first example becomes primary when the file marks none`() {
-        val pack = ContentPackMapper.toContentPack(file(), timestamp = 1_000L)
+        val pack = ContentPackMapper.toParsedContentPack(file(), timestamp = 1_000L)
 
         assertTrue(pack.expressions.single().examples.single().isPrimary)
     }
@@ -68,7 +68,7 @@ class ContentPackMapperTest {
             ),
         )
 
-        val examples = ContentPackMapper.toContentPack(file, timestamp = 1_000L)
+        val examples = ContentPackMapper.toParsedContentPack(file, timestamp = 1_000L)
             .expressions
             .single()
             .examples
@@ -79,7 +79,7 @@ class ContentPackMapperTest {
 
     @Test
     fun `tags keep their name as identifier`() {
-        val pack = ContentPackMapper.toContentPack(file(), timestamp = 1_000L)
+        val pack = ContentPackMapper.toParsedContentPack(file(), timestamp = 1_000L)
 
         val tags = pack.expressions.single().tags
         assertEquals(setOf("phrasal-verb", "problem-solving"), tags.map { it.id.value }.toSet())
