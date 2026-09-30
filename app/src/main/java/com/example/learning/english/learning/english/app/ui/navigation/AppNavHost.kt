@@ -23,7 +23,9 @@ import com.example.learning.english.learning.english.app.ui.home.HomeViewModel
 import com.example.learning.english.learning.english.app.ui.onboarding.OnboardingEffect
 import com.example.learning.english.learning.english.app.ui.onboarding.OnboardingScreen
 import com.example.learning.english.learning.english.app.ui.onboarding.OnboardingViewModel
+import com.example.learning.english.learning.english.app.ui.practice.PracticeEffect
 import com.example.learning.english.learning.english.app.ui.practice.PracticeScreen
+import com.example.learning.english.learning.english.app.ui.practice.PracticeViewModel
 
 /**
  * Grafo de navegación: onboarding → home → práctica (README §44).
@@ -57,13 +59,41 @@ fun AppNavHost(
         composable(route = Routes.HOME) {
             HomeRoute(onOpenSession = { sessionId -> navController.navigate(Routes.practice(sessionId)) })
         }
-        composable(route = Routes.PRACTICE) { entry ->
-            // El id lo pone siempre `Routes.practice`: si falta, la ruta está mal
-            // construida, y un `SessionId("")` silencioso sería peor fallar.
-            val sessionId = requireNotNull(entry.arguments?.getString(Routes.PRACTICE_ARG_SESSION_ID))
-            PracticeScreen(sessionId = SessionId(sessionId))
+        composable(route = Routes.PRACTICE) {
+            PracticeRoute(onFinish = { navController.toHomeFromPractice() })
         }
     }
+}
+
+/**
+ * Práctica: observa su ViewModel y ejecuta el efecto de salida.
+ *
+ * Volver atrás desde la práctica dejaría Home con un contador obsoleto —los
+ *ercise ya están calificados—, así que al terminar se salta a Home en lugar de
+ * deshacer la navegación.
+ */
+@Composable
+private fun PracticeRoute(onFinish: () -> Unit) {
+    val viewModel: PracticeViewModel = viewModel(factory = AppViewModelFactory.Practice)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                PracticeEffect.Finish -> onFinish()
+            }
+        }
+    }
+
+    PracticeScreen(
+        uiState = uiState,
+        onIntroductionSeen = viewModel::onIntroductionSeen,
+        onOptionSelected = viewModel::onOptionSelected,
+        onTextChanged = viewModel::onTextChanged,
+        onCheck = viewModel::onCheck,
+        onRate = viewModel::onRate,
+        onFinish = viewModel::onFinish,
+    )
 }
 
 @Composable
@@ -123,4 +153,14 @@ private fun NavHostController.toHomeFromOnboarding() {
     navigate(Routes.HOME) {
         popUpTo(Routes.ONBOARDING) { inclusive = true }
     }
+}
+
+/**
+ * Al terminar la práctica se vuelve a Home sin apilarlo otra vez.
+ *
+ * Se hace `popBackStack` en lugar de navegar: la práctica se abrió desde Home, así
+ * que deshacerse devuelve a la misma instancia, ya con los contadores al día.
+ */
+private fun NavHostController.toHomeFromPractice() {
+    popBackStack(route = Routes.HOME, inclusive = false)
 }

@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.learning.english.learning.english.app.di.appContainer
+import com.example.learning.english.learning.english.app.di.practiceSessionId
 import com.example.learning.english.learning.english.app.ui.home.HomeViewModel
 import com.example.learning.english.learning.english.app.ui.navigation.StartDestinationViewModel
 import com.example.learning.english.learning.english.app.ui.onboarding.OnboardingViewModel
+import com.example.learning.english.learning.english.app.ui.practice.PracticeViewModel
 
 /**
  * Fábricas de los ViewModels de la app.
@@ -42,6 +44,25 @@ object AppViewModelFactory {
             OnboardingViewModel(
                 userPreferencesRepository = container.userPreferencesRepository,
                 contentPackRepository = container.contentPackRepository,
+            )
+        }
+    }
+
+    /**
+     * La práctica necesita saber qué sesión: el id viaja en los argumentos de la
+     * ruta y la fábrica lo lee de ahí, no de un parámetro aparte.
+     */
+    val Practice: ViewModelProvider.Factory = viewModelFactory {
+        initializer {
+            val container = appContainer
+            PracticeViewModel(
+                sessionId = practiceSessionId,
+                sessionRepository = container.sessionRepository,
+                expressionRepository = container.expressionRepository,
+                learningStateRepository = container.learningStateRepository,
+                reviewRepository = container.reviewRepository,
+                exerciseGenerator = container.exerciseGenerator,
+                learningEngine = container.learningEngine,
             )
         }
     }

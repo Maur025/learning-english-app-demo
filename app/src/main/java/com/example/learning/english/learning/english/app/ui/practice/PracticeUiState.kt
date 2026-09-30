@@ -32,15 +32,22 @@ sealed interface PracticeUiState {
         val prompt: PracticeExercise,
         val progress: SessionProgress,
         val turn: AnswerTurn,
-        /** Una expresión nunca vista se presenta antes de preguntar (§43.3). */
-        val isIntroductionPending: Boolean,
+        /**
+         * Presentación de una expresión nunca vista, o `null` si ya se conoce.
+         * Se muestra antes de preguntar (§43.3): presentar no es recordar, así
+         * que no deja revisión registrada.
+         */
+        val introduction: ExpressionIntroUiModel?,
     ) : PracticeUiState {
         /** El turno mientras se responde; `null` en cuanto se ha revelado. */
         val answering: AnswerTurn.Answering?
             get() = turn as? AnswerTurn.Answering
 
+        val isIntroductionPending: Boolean
+            get() = introduction != null
+
         val canAnswer: Boolean
-            get() = turn is AnswerTurn.Answering && !isIntroductionPending && !turn.isChecking
+            get() = turn is AnswerTurn.Answering && introduction == null && !turn.isChecking
 
         val isRating: Boolean
             get() = turn is AnswerTurn.Revealed && turn.isRegistering
@@ -52,7 +59,7 @@ sealed interface PracticeUiState {
     /** La sesión se guardó pero el plan quedó vacío: no hay nada que hacer. */
     data object NothingToPractice : PracticeUiState
 
-    data class Failed(@StringRes val messageRes: Int) : PracticeUiState
+    data class Failed(@param:StringRes val messageRes: Int) : PracticeUiState
 }
 
 /**
@@ -74,11 +81,17 @@ sealed interface AnswerTurn {
     data class Answering(val draft: UserAnswer?, val checking: Boolean = false) : AnswerTurn
 
     /**
-     * Ya respondió: [evaluation] lleva el veredicto y la respuesta a revelar, y
+     * Ya respondió: [evaluation] lleva el veredicto y la respuesta a revelar,
      * [suggestedRating] la calificación que la app propone, `null` en producción.
+     *
+     * [draft] se conserva para poder repetir lo que el usuario escribió tal cual.
+     * [AnswerEvaluation.normalizedAnswer] no sirve para eso: es la respuesta ya
+     * normalizada, y enseñarla haría creer que el usuario Tecleó «figure out» cuando
+     * escribió «Figure Out!».
      */
     data class Revealed(
         val evaluation: AnswerEvaluation,
+        val draft: UserAnswer?,
         val suggestedRating: ReviewRating?,
         val registering: Boolean = false,
     ) : AnswerTurn
@@ -95,6 +108,22 @@ data class SessionProgress(
     val fraction: Float
         get() = if (total == 0) 0f else answered.toFloat() / total
 }
+
+/**
+ * Presentación de una expresión que el usuario todavía no ha visto (§43.3).
+ *
+ * Es el único modelo de UI que se copia de `Expression`: el resto viaja como
+ * modelo de dominio porque ya son valores puros con la forma que la pantalla
+ * necesita. Aquí el copia aporta algo —la pantalla presenta una expresión, no un
+ * ejercicio, y para eso el tipo del ejercicio da una forma distinta cada vez.
+ */
+data class ExpressionIntroUiModel(
+    val phrase: String,
+    val meaning: String,
+    val explanation: String?,
+    val pattern: String?,
+    val examples: List<String>,
+)
 
 /** Salidas que la pantalla ejecuta y no puede decidir sola. */
 sealed interface PracticeEffect {

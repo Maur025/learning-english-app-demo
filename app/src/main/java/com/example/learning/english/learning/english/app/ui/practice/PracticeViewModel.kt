@@ -10,6 +10,7 @@ import com.example.learning.english.learning.english.app.domain.exercise.Practic
 import com.example.learning.english.learning.english.app.domain.exercise.RecognitionExercise
 import com.example.learning.english.learning.english.app.domain.exercise.WrittenExercise
 import com.example.learning.english.learning.english.app.domain.model.Exercise
+import com.example.learning.english.learning.english.app.domain.model.Expression
 import com.example.learning.english.learning.english.app.domain.model.ExpressionId
 import com.example.learning.english.learning.english.app.domain.model.LearningSession
 import com.example.learning.english.learning.english.app.domain.model.ReviewRating
@@ -79,7 +80,7 @@ class PracticeViewModel(
      * recordar. La revisión se registra cuando el usuario responde de verdad.
      */
     fun onIntroductionSeen() {
-        state.update { it.copy(isIntroductionPending = false) }
+        state.update { it.copy(introduction = null) }
     }
 
     fun onOptionSelected(optionId: String) {
@@ -116,7 +117,9 @@ class PracticeViewModel(
                 learningEngine.evaluateAnswer(requireNotNull(current.session), exercise, draft)
             } ?: return@launch
 
-            state.update { it.copy(turn = AnswerTurn.Revealed(evaluation, evaluation.suggestedRating)) }
+            state.update {
+                it.copy(turn = AnswerTurn.Revealed(evaluation, draft, evaluation.suggestedRating))
+            }
         }
     }
 
@@ -186,9 +189,21 @@ class PracticeViewModel(
             exercise = exercise,
             prompt = prompt,
             turn = AnswerTurn.Answering(draft = null),
-            isIntroductionPending = isUnseen(exercise.expressionId),
+            introduction = requireNotNull(expression).introIfUnseen(),
         )
         shownAtMillis.value = now()
+    }
+
+    /** Solo se presenta lo que no se ha visto nunca: repetirla sería ruido (§43.3). */
+    private suspend fun Expression.introIfUnseen(): ExpressionIntroUiModel? {
+        if (!isUnseen(id)) return null
+        return ExpressionIntroUiModel(
+            phrase = phrase,
+            meaning = primaryMeaning,
+            explanation = explanation,
+            pattern = patterns.firstOrNull()?.pattern,
+            examples = examples.map { it.english },
+        )
     }
 
     private suspend fun summarize(session: LearningSession) {
@@ -239,7 +254,7 @@ class PracticeViewModel(
         val prompt: PracticeExercise? = null,
         val turn: AnswerTurn = AnswerTurn.Answering(draft = null),
         val summary: SessionSummary? = null,
-        val isIntroductionPending: Boolean = false,
+        val introduction: ExpressionIntroUiModel? = null,
         val failureRes: Int? = null,
     ) {
         val answering: AnswerTurn.Answering?
@@ -259,7 +274,7 @@ class PracticeViewModel(
 
         fun answeringDraft(answer: UserAnswer) = copy(
             turn = AnswerTurn.Answering(answer),
-            isIntroductionPending = false,
+            introduction = null,
         )
 
         private fun AnswerTurn.copyBusy(busy: Boolean) = when (this) {
@@ -280,7 +295,7 @@ class PracticeViewModel(
                     total = session.exercises.size,
                 ),
                 turn = turn,
-                isIntroductionPending = isIntroductionPending,
+                introduction = introduction,
             )
         }
     }

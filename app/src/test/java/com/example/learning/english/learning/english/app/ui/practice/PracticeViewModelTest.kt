@@ -25,6 +25,7 @@ import com.example.learning.english.learning.english.app.domain.model.ReviewRati
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
 import com.example.learning.english.learning.english.app.domain.model.SessionId
 import com.example.learning.english.learning.english.app.domain.model.SessionSummary
+import com.example.learning.english.learning.english.app.domain.model.UserAnswer
 import com.example.learning.english.learning.english.app.domain.scheduler.Sm2ReviewScheduler
 import com.example.learning.english.learning.english.app.domain.service.ReviewRecorder
 import com.example.learning.english.learning.english.app.ui.MainDispatcherRule
@@ -147,6 +148,33 @@ class PracticeViewModelTest {
         // Nada se persiste hasta que el usuario confirma cómo le fue (§35).
         assertTrue(reviewRepository.events.isEmpty())
         assertEquals(0, savedSession().currentPosition)
+    }
+
+    /**
+     * La respuesta revelada tiene que ser la que escribió la persona, no la
+     * normalizada: enseñar «figure out» tras haber tecleado «Figure Out!» haría
+     * creer que se equivocó al escribir.
+     */
+    @Test
+    fun `the revealed turn keeps the answer as it was typed`() = runTest {
+        val viewModel = viewModel(sessionWith(exercise(SESSION_ID, 0, "figure-out", ReviewType.CLOZE)))
+        viewModel.onTextChanged("  Figure Out!  ")
+
+        viewModel.checkAnswer()
+
+        assertEquals(UserAnswer.Text("  Figure Out!  "), viewModel.revealed().draft)
+    }
+
+    /** En recognition no hay texto que repetir: lo elegido se pintó ya arriba. */
+    @Test
+    fun `the revealed turn keeps the chosen option`() = runTest {
+        val viewModel = viewModel(sessionWithTwoRecognitionSteps())
+        viewModel.answerWrongOption()
+
+        viewModel.checkAnswer()
+
+        val revealed = viewModel.revealed()
+        assertEquals(UserAnswer.Choice(viewModel.chosenOption()), revealed.draft)
     }
 
     @Test
@@ -380,6 +408,11 @@ class PracticeViewModelTest {
     private suspend fun PracticeViewModel.answerWrongOption() {
         val prompt = active().prompt as RecognitionExercise
         onOptionSelected(prompt.options.first { it.id != prompt.correctOptionId }.id)
+    }
+
+    private suspend fun PracticeViewModel.chosenOption(): String {
+        val prompt = active().prompt as RecognitionExercise
+        return prompt.options.first { it.id != prompt.correctOptionId }.id
     }
 
     /** Comprobar es cuando el usuario ha terminado de responder. */

@@ -32,7 +32,57 @@
     </plurals>
 
     <string name="practice_title">Practice</string>
-    <string name="practice_coming_soon">Session %1$s is saved. Exercises arrive with the next phase.</string>
+    <string name="practice_close">Close</string>
+
+    <!-- Estados sin ejercicio que mostrar -->
+    <string name="practice_nothing_to_do">Nothing left in this session. Come back tomorrow.</string>
     <string name="practice_session_missing">This session no longer exists.</string>
     <string name="practice_exercise_unavailable">This exercise cannot be shown with the installed content.</string>
+
+    <string name="practice_progress">%1$d of %2$d</string>
+
+    <!-- Presentacion de una expresion nueva (README 43.3) -->
+    <string name="practice_meaning">Meaning</string>
+    <string name="practice_intro_understand">I understand</string>
+    <string name="practice_introduction_notice">Reading it is not reviewing it: it will come back for a real review.</string>
+
+    <!-- Enunciados por tipo de ejercicio -->
+    <string name="practice_pick_meaning">What does this mean?</string>
+    <string name="practice_instruction_cloze">Fill the gap</string>
+    <string name="practice_instruction_guided_recall">Write the expression in English</string>
+    <string name="practice_instruction_translation">Write it in English</string>
+    <string name="practice_instruction_production">Say it in English</string>
+    <string name="practice_hint">Hint</string>
+
+    <!-- Respuesta -->
+    <string name="practice_answer_label">Your answer in English</string>
+    <string name="practice_answer_supporting">Spelling does not have to be perfect.</string>
+    <string name="practice_check">Check</string>
+
+    <!-- Fase revelada -->
+    <string name="practice_correct">Correct</string>
+    <string name="practice_incorrect">Not quite</string>
+    <string name="practice_self_assessed_notice">There is no automatic grade for producing English: rate yourself below.</string>
+    <string name="practice_your_answer">You answered</string>
+    <string name="practice_expected_answer">Expected answer</string>
+    <string name="practice_pattern">Pattern</string>
+    <string name="practice_explanation">Explanation</string>
+    <string name="practice_example">Example</string>
+
+    <!-- Calificacion (README 34) -->
+    <string name="practice_rating_question">How well did you know it?</string>
+    <string name="practice_rating_forgot">Forgot</string>
+    <string name="practice_rating_hard">Hard</string>
+    <string name="practice_rating_good">Good</string>
+    <string name="practice_rating_easy">Easy</string>
+
+    <!-- Resumen de sesion (README 43.5) -->
+    <string name="practice_summary_title">Session complete</string>
+    <string name="practice_summary_empty">Nothing to show for this session.</string>
+    <string name="practice_summary_duration_label">Session length</string>
+    <string name="practice_summary_reviewed_label">Reviewed</string>
+    <string name="practice_summary_new_label">New expressions</string>
+    <string name="practice_summary_recognition_label">Recognition accuracy</string>
+    <string name="practice_summary_production_label">Production accuracy</string>
+    <string name="practice_summary_improved_label">Expressions that moved up</string>
 </resources>
