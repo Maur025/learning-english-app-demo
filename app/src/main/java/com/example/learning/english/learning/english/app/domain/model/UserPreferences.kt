@@ -30,3 +30,16 @@ enum class ThemePreference {
     LIGHT,
     DARK,
 }
+
+/**
+ * Packs con los que se practica.
+ *
+ * Sin selección explícita se usa todo lo instalado: es el valor por defecto de
+ * las preferencias nuevas y evita una sesión vacía por descuido. Los ids que ya
+ * no estén instalados se ignoran, porque la lista válida la impone el contenido
+ * y no la preferencia.
+ */
+fun UserPreferences.selectedPackIds(installedPackIds: Set<PackId>): Set<PackId> {
+    val selection = preferredPackIds.intersect(installedPackIds)
+    return selection.ifEmpty { installedPackIds }
+}

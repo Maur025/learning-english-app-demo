@@ -5,13 +5,13 @@ import com.example.learning.english.learning.english.app.domain.model.Expression
 import com.example.learning.english.learning.english.app.domain.model.ExpressionId
 import com.example.learning.english.learning.english.app.domain.model.LearningStage
 import com.example.learning.english.learning.english.app.domain.model.LearningState
-import com.example.learning.english.learning.english.app.domain.model.PackId
 import com.example.learning.english.learning.english.app.domain.model.ReviewSkill
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
 import com.example.learning.english.learning.english.app.domain.model.SessionPlan
 import com.example.learning.english.learning.english.app.domain.model.SessionReason
 import com.example.learning.english.learning.english.app.domain.model.SessionStep
 import com.example.learning.english.learning.english.app.domain.model.UserPreferences
+import com.example.learning.english.learning.english.app.domain.model.selectedPackIds
 
 /**
  * Compone la sesión diaria a partir del contenido y del estado de aprendizaje
@@ -50,7 +50,7 @@ class DailySessionPlanner(
         preferences: UserPreferences,
         now: Long,
     ): SessionPlan {
-        val selected = expressions.filter { it.packId in selectedPackIds(expressions, preferences) }
+        val selected = expressions.filterSelectedBy(preferences)
         if (selected.isEmpty()) return SessionPlan()
 
         val statesById = states.associateBy { it.expressionId }
@@ -84,8 +84,11 @@ class DailySessionPlanner(
         return SessionPlan(steps)
     }
 
-    private fun selectedPackIds(expressions: List<Expression>, preferences: UserPreferences): Set<PackId> =
-        preferences.preferredPackIds.ifEmpty { expressions.mapTo(mutableSetOf()) { it.packId } }
+    private fun List<Expression>.filterSelectedBy(preferences: UserPreferences): List<Expression> {
+        val installedPackIds = mapTo(mutableSetOf()) { it.packId }
+        val selectedPackIds = preferences.selectedPackIds(installedPackIds)
+        return filter { it.packId in selectedPackIds }
+    }
 
     /** 1. Vencidas: primero la que más se aplazó. */
     private fun List<Expression>.dueCandidates(
