@@ -2,6 +2,7 @@ package com.example.learning.english.learning.english.app.ui.home
 
 import com.example.learning.english.learning.english.app.domain.engine.LearningEngine
 import com.example.learning.english.learning.english.app.domain.engine.ReviewResult
+import com.example.learning.english.learning.english.app.domain.exercise.AnswerEvaluation
 import com.example.learning.english.learning.english.app.domain.model.Exercise
 import com.example.learning.english.learning.english.app.domain.model.Expression
 import com.example.learning.english.learning.english.app.domain.model.ExpressionId
@@ -154,12 +155,17 @@ class FakeLearningEngine(
         return session
     }
 
-    override suspend fun registerAnswer(
+    override suspend fun evaluateAnswer(
         session: LearningSession,
         exercise: Exercise,
         answer: UserAnswer,
+    ): AnswerEvaluation = error("Home never evaluates answers")
+
+    override suspend fun registerAnswer(
+        session: LearningSession,
+        exercise: Exercise,
+        rating: ReviewRating,
         reviewedAt: Long,
-        selfRating: ReviewRating?,
         responseTimeMs: Long?,
     ): ReviewResult = error("Home never registers answers")
 }

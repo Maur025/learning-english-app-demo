@@ -60,25 +60,38 @@ class DefaultLearningEngine(
         return session
     }
 
-    override suspend fun registerAnswer(
+    override suspend fun evaluateAnswer(
         session: LearningSession,
         exercise: Exercise,
         answer: UserAnswer,
+    ): AnswerEvaluation {
+        require(exercise in session.exercises) { "exercise does not belong to session ${session.id.value}" }
+        val practiceExercise = practiceExerciseOf(exercise)
+        return when (practiceExercise) {
+            is RecognitionExercise -> {
+                require(answer is UserAnswer.Choice) { "recognition needs a choice answer" }
+                answerEvaluator.evaluateChoice(practiceExercise, answer)
+            }
+            is WrittenExercise -> {
+                require(answer is UserAnswer.Text) { "written exercises need a text answer" }
+                answerEvaluator.evaluateText(practiceExercise, answer)
+            }
+        }
+    }
+
+    override suspend fun registerAnswer(
+        session: LearningSession,
+        exercise: Exercise,
+        rating: ReviewRating,
         reviewedAt: Long,
-        selfRating: ReviewRating?,
         responseTimeMs: Long?,
     ): ReviewResult {
         require(exercise in session.exercises) { "exercise does not belong to session ${session.id.value}" }
-        val pool = expressionRepository.getAll()
-        val expression = requireNotNull(expressionRepository.getById(exercise.expressionId)) {
-            "expression ${exercise.expressionId.value} is no longer available"
+        // Se comprueba el turno antes de escribir: si el ejercicio no es el actual,
+        // una revisión huérfana quedaría registrada sin avanzar la sesión.
+        require(exercise.position == session.currentPosition) {
+            "cannot register position ${exercise.position} while the session is at ${session.currentPosition}"
         }
-        val practiceExercise = requireNotNull(exerciseGenerator.generate(expression, exercise.reviewType, pool)) {
-            "content of ${expression.phrase} cannot support ${exercise.reviewType}"
-        }
-
-        val evaluation = evaluate(practiceExercise, answer)
-        val rating = ratingFor(evaluation, selfRating)
         val learningState = reviewRecorder.record(
             expressionId = exercise.expressionId,
             reviewType = exercise.reviewType,
@@ -91,11 +104,26 @@ class DefaultLearningEngine(
         sessionRepository.save(advancedSession)
 
         return ReviewResult(
-            evaluation = evaluation,
             rating = rating,
             learningState = learningState,
             session = advancedSession,
         )
+    }
+
+    /**
+     * Reconstruye el ejercicio concreto desde la referencia persistida.
+     *
+     * [ExerciseGenerator] es determinista, así que evaluar y volver a evaluar dan
+     * el mismo ejercicio sin necesidad de guardarlo en Room.
+     */
+    private suspend fun practiceExerciseOf(exercise: Exercise): PracticeExercise {
+        val pool = expressionRepository.getAll()
+        val expression = requireNotNull(expressionRepository.getById(exercise.expressionId)) {
+            "expression ${exercise.expressionId.value} is no longer available"
+        }
+        return requireNotNull(exerciseGenerator.generate(expression, exercise.reviewType, pool)) {
+            "content of ${expression.phrase} cannot support ${exercise.reviewType}"
+        }
     }
 
     private fun SessionPlan.toExercises(sessionId: SessionId, expressions: List<Expression>): List<Exercise> {
@@ -115,32 +143,4 @@ class DefaultLearningEngine(
             )
         }
     }
-
-    private fun evaluate(exercise: PracticeExercise, answer: UserAnswer): AnswerEvaluation = when (exercise) {
-        is RecognitionExercise -> {
-            require(answer is UserAnswer.Choice) { "recognition needs a choice answer" }
-            answerEvaluator.evaluateChoice(exercise, answer)
-        }
-        is WrittenExercise -> {
-            require(answer is UserAnswer.Text) { "written exercises need a text answer" }
-            answerEvaluator.evaluateText(exercise, answer)
-        }
-    }
-
-    /**
-     * En los ejercicios calificados sola manda la evaluación; si el usuario
-     * autocalifica, su criterio manda porque sabe si la acertó despacio. En
-     * producción no hay evaluación automática, así que el rating es obligatorio
-     * (§35): fingir que un comparador de cadenas entiende inglés sería mentira.
-     */    private fun ratingFor(evaluation: AnswerEvaluation, selfRating: ReviewRating?): ReviewRating =
-        when (evaluation) {
-            is AnswerEvaluation.Graded -> selfRating ?: if (evaluation.isCorrect) {
-                ReviewRating.GOOD
-            } else {
-                ReviewRating.FORGOT
-            }
-            is AnswerEvaluation.SelfAssessed -> requireNotNull(selfRating) {
-                "production exercises are self-rated (README §35)"
-            }
-        }
 }

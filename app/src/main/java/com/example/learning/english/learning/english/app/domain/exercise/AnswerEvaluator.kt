@@ -1,5 +1,6 @@
 package com.example.learning.english.learning.english.app.domain.exercise
 
+import com.example.learning.english.learning.english.app.domain.model.ReviewRating
 import com.example.learning.english.learning.english.app.domain.model.UserAnswer
 
 /**
@@ -11,8 +12,7 @@ import com.example.learning.english.learning.english.app.domain.model.UserAnswer
  * respuestas naturales y el usuario se autoevalúe, en lugar de fingir que un
  * comparador de cadenas entiende inglés.
  *
- * Es sin estado y sin dependencias: el mapeo de [AnswerEvaluation] a
- * `ReviewRating` es responsabilidad de `LearningEngine` (Fase 6).
+ * Es sin estado y sin dependencias.
  */
 class AnswerEvaluator {
 
@@ -62,6 +62,16 @@ sealed interface AnswerEvaluation {
     val expectedAnswer: String
         get() = expectedAnswers.first()
 
+    /**
+     * Calificación que la UI propone antes de que el usuario confirme.
+     *
+     * Existe para que el flujo sea el mismo en los cinco tipos (§43.4): el
+     * ejercicio se revela siempre y la calificación se confirma siempre. En
+     * producción es `null` porque no hay veredicto automático, así que la
+     * elección es del usuario y no un dato que la app pueda deducir (§35).
+     */
+    val suggestedRating: ReviewRating?
+
     /** Calificación automática: recognition, cloze, guided recall o translation. */
     data class Graded(
         override val expectedAnswers: List<String>,
@@ -71,13 +81,19 @@ sealed interface AnswerEvaluation {
     ) : AnswerEvaluation {
         val isCorrect: Boolean
             get() = match != MatchKind.INCORRECT
+
+        override val suggestedRating: ReviewRating
+            get() = if (isCorrect) ReviewRating.GOOD else ReviewRating.FORGOT
     }
 
     /** Production: la respuesta se muestra y el usuario se autocalifica (§35). */
     data class SelfAssessed(
         override val expectedAnswers: List<String>,
         val normalizedAnswer: String?,
-    ) : AnswerEvaluation
+    ) : AnswerEvaluation {
+        override val suggestedRating: ReviewRating?
+            get() = null
+    }
 }
 
 enum class MatchKind {

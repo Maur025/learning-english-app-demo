@@ -3,6 +3,7 @@ package com.example.learning.english.learning.english.app.domain.exercise
 import com.example.learning.english.learning.english.app.domain.exercise.ExerciseFixtures.distractorPool
 import com.example.learning.english.learning.english.app.domain.exercise.ExerciseFixtures.figureOut
 import com.example.learning.english.learning.english.app.domain.exercise.ExerciseFixtures.withoutExamples
+import com.example.learning.english.learning.english.app.domain.model.ReviewRating
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
 import com.example.learning.english.learning.english.app.domain.model.UserAnswer
 import org.junit.Assert.assertEquals
@@ -126,6 +127,47 @@ class AnswerEvaluatorTest {
 
         assertEquals(MatchKind.NORMALIZED, evaluation.graded().match)
     }
+
+    // region suggested rating
+
+    @Test
+    fun `a correct recognition suggests good`() {
+        val exercise = generator.generate(figureOut, ReviewType.RECOGNITION, distractorPool) as RecognitionExercise
+
+        val evaluation = evaluator.evaluateChoice(exercise, UserAnswer.Choice(exercise.correctOptionId))
+
+        assertEquals(ReviewRating.GOOD, evaluation.suggestedRating)
+    }
+
+    @Test
+    fun `a wrong recognition suggests forgot`() {
+        val exercise = generator.generate(figureOut, ReviewType.RECOGNITION, distractorPool) as RecognitionExercise
+        val wrongOption = exercise.options.first { it.id != exercise.correctOptionId }
+
+        val evaluation = evaluator.evaluateChoice(exercise, UserAnswer.Choice(wrongOption.id))
+
+        assertEquals(ReviewRating.FORGOT, evaluation.suggestedRating)
+    }
+
+    @Test
+    fun `a normalized match also suggests good`() {
+        val exercise = generator.generate(figureOut, ReviewType.CLOZE) as ClozeExercise
+
+        val evaluation = evaluator.evaluateText(exercise, UserAnswer.Text("  Figure Out!  "))
+
+        assertEquals(ReviewRating.GOOD, evaluation.suggestedRating)
+    }
+
+    @Test
+    fun `production suggests no rating so the user has to choose`() {
+        val exercise = generator.generate(figureOut, ReviewType.PRODUCTION) as ProductionExercise
+
+        val evaluation = evaluator.evaluateText(exercise, UserAnswer.Text("I'm trying to find out why it failed."))
+
+        assertNull(evaluation.suggestedRating)
+    }
+
+    // endregion
 
     /** Todos los tipos escritos salvo production se califican automáticamente (§35). */
     private fun AnswerEvaluation.graded(): AnswerEvaluation.Graded = this as AnswerEvaluation.Graded

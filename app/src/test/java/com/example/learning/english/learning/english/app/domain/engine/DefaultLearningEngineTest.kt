@@ -16,6 +16,7 @@ import com.example.learning.english.learning.english.app.domain.scheduler.Sm2Rev
 import com.example.learning.english.learning.english.app.domain.service.ReviewRecorder
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -89,26 +90,44 @@ class DefaultLearningEngineTest {
     }
 
     @Test
+    fun `evaluating an answer writes nothing`() = runTest {
+        val session = engine.createDailySession(preferences.copy(newExpressionsPerDay = 1), NOW)
+        val step = session.nextExercise!!
+        val practice = recognition(step)
+
+        val evaluation = engine.evaluateAnswer(
+            session = session,
+            exercise = step,
+            answer = UserAnswer.Choice(practice.correctOptionId),
+        )
+
+        assertTrue((evaluation as AnswerEvaluation.Graded).isCorrect)
+        assertEquals(practice.reveal.expectedAnswers, evaluation.expectedAnswers)
+        assertTrue(reviewRepository.events.isEmpty())
+        assertNull(learningStateRepository.getByExpression(step.expressionId))
+        assertEquals(0, savedSession(session.id).currentPosition)
+    }
+
+    @Test
     fun `a correct recognition answer is graded and advances the session`() = runTest {
         val session = engine.createDailySession(preferences.copy(newExpressionsPerDay = 1), NOW)
         val step = session.nextExercise!!
         val practice = recognition(step)
 
+        val evaluation = evaluate(session, UserAnswer.Choice(practice.correctOptionId))
         val result = engine.registerAnswer(
             session = session,
             exercise = step,
-            answer = UserAnswer.Choice(practice.correctOptionId),
+            rating = evaluation.suggestedRating!!,
             reviewedAt = REVIEWED_AT,
         )
 
-        assertTrue((result.evaluation as AnswerEvaluation.Graded).isCorrect)
         assertEquals(ReviewRating.GOOD, result.rating)
         assertEquals(1, result.learningState.reviewCount)
         assertEquals(LearningStage.SEEN, result.learningState.stage)
         assertEquals(1, result.session.currentPosition)
         assertTrue(result.isSessionCompleted)
         assertEquals(REVIEWED_AT + 2 * DAY_MILLIS, result.learningState.nextReviewAt)
-        assertEquals(practice.reveal.expectedAnswers, result.evaluation.expectedAnswers)
     }
 
     @Test
@@ -118,27 +137,29 @@ class DefaultLearningEngineTest {
         val practice = recognition(step)
         val wrongOption = practice.options.first { it.id != practice.correctOptionId }.id
 
+        val evaluation = evaluate(session, UserAnswer.Choice(wrongOption))
         val result = engine.registerAnswer(
             session = session,
             exercise = step,
-            answer = UserAnswer.Choice(wrongOption),
+            rating = evaluation.suggestedRating!!,
             reviewedAt = REVIEWED_AT,
         )
 
         assertEquals(ReviewRating.FORGOT, result.rating)
         assertEquals(REVIEWED_AT, result.learningState.nextReviewAt)
         assertEquals(1, result.learningState.failedReviewCount)
-        assertEquals(practice.reveal.expectedAnswers.first(), result.expectedAnswer)
+        assertEquals(practice.reveal.expectedAnswers.first(), evaluation.expectedAnswer)
     }
 
     @Test
     fun `the review history records the session and the response time`() = runTest {
         val session = engine.createDailySession(preferences.copy(newExpressionsPerDay = 1), NOW)
+        val step = session.nextExercise!!
 
         engine.registerAnswer(
             session = session,
-            exercise = session.nextExercise!!,
-            answer = UserAnswer.Choice(recognition(session.nextExercise!!).correctOptionId),
+            exercise = step,
+            rating = ReviewRating.GOOD,
             reviewedAt = REVIEWED_AT,
             responseTimeMs = 4_200L,
         )
@@ -152,55 +173,48 @@ class DefaultLearningEngineTest {
     }
 
     @Test
-    fun `an explicit rating wins over the derived one`() = runTest {
+    fun `the confirmed rating is persisted even when the answer was correct`() = runTest {
         val session = engine.createDailySession(preferences.copy(newExpressionsPerDay = 1), NOW)
         val step = session.nextExercise!!
+        val evaluation = evaluate(session, UserAnswer.Choice(recognition(step).correctOptionId))
 
         val result = engine.registerAnswer(
             session = session,
             exercise = step,
-            answer = UserAnswer.Choice(recognition(step).correctOptionId),
+            rating = ReviewRating.HARD,
             reviewedAt = REVIEWED_AT,
-            selfRating = ReviewRating.HARD,
         )
 
+        assertTrue((evaluation as AnswerEvaluation.Graded).isCorrect)
         assertEquals(ReviewRating.HARD, result.rating)
         assertEquals(ReviewRating.HARD, reviewRepository.events.single().rating)
     }
 
     @Test
-    fun `a production exercise is self rated and never auto graded`() = runTest {
+    fun `a production exercise is never auto graded and proposes no rating`() = runTest {
+        val session = sessionWith(exercise(sessionId, 0, "figure-out", ReviewType.PRODUCTION))
+
+        val evaluation = evaluate(session, UserAnswer.Text("I'm trying to figure out why the app crashes."))
+
+        assertTrue(evaluation is AnswerEvaluation.SelfAssessed)
+        assertNull(evaluation.suggestedRating)
+        assertTrue(reviewRepository.events.isEmpty())
+    }
+
+    @Test
+    fun `a production exercise is scored by the user rating only`() = runTest {
         val session = sessionWith(exercise(sessionId, 0, "figure-out", ReviewType.PRODUCTION))
 
         val result = engine.registerAnswer(
             session = session,
             exercise = session.nextExercise!!,
-            answer = UserAnswer.Text("I'm trying to figure out why the app crashes."),
+            rating = ReviewRating.GOOD,
             reviewedAt = REVIEWED_AT,
-            selfRating = ReviewRating.GOOD,
         )
 
-        assertTrue(result.evaluation is AnswerEvaluation.SelfAssessed)
         assertEquals(ReviewRating.GOOD, result.rating)
         assertTrue(result.learningState.productionScore > 0)
         assertEquals(0, result.learningState.recognitionScore)
-    }
-
-    @Test
-    fun `a production exercise without a self rating is rejected`() = runTest {
-        val session = sessionWith(exercise(sessionId, 0, "figure-out", ReviewType.PRODUCTION))
-
-        val failure = runCatching {
-            engine.registerAnswer(
-                session = session,
-                exercise = session.nextExercise!!,
-                answer = UserAnswer.Text("figure out"),
-                reviewedAt = REVIEWED_AT,
-            )
-        }.exceptionOrNull()
-
-        assertTrue(failure is IllegalArgumentException)
-        assertTrue(reviewRepository.events.isEmpty())
     }
 
     @Test
@@ -208,15 +222,11 @@ class DefaultLearningEngineTest {
         val session = sessionWith(exercise(sessionId, 0, "figure-out", ReviewType.CLOZE))
 
         val failure = runCatching {
-            engine.registerAnswer(
-                session = session,
-                exercise = session.nextExercise!!,
-                answer = UserAnswer.Choice("figure-out"),
-                reviewedAt = REVIEWED_AT,
-            )
+            evaluate(session, UserAnswer.Choice("figure-out"))
         }.exceptionOrNull()
 
         assertTrue(failure is IllegalArgumentException)
+        assertTrue(reviewRepository.events.isEmpty())
     }
 
     @Test
@@ -229,7 +239,7 @@ class DefaultLearningEngineTest {
         val answered = engine.registerAnswer(
             session = session,
             exercise = first,
-            answer = UserAnswer.Choice(recognition(first).correctOptionId),
+            rating = ReviewRating.GOOD,
             reviewedAt = REVIEWED_AT,
         ).session
 
@@ -237,13 +247,38 @@ class DefaultLearningEngineTest {
             engine.registerAnswer(
                 session = answered,
                 exercise = first,
-                answer = UserAnswer.Choice(recognition(first).correctOptionId),
+                rating = ReviewRating.GOOD,
                 reviewedAt = REVIEWED_AT + 1,
             )
         }.exceptionOrNull()
 
         assertTrue(failure is IllegalArgumentException)
+        assertEquals(1, reviewRepository.events.size)
         assertEquals(1, answered.currentPosition)
+    }
+
+    @Test
+    fun `a step out of turn is rejected before writing anything`() = runTest {
+        val session = sessionWith(
+            exercise(sessionId, 0, "figure-out", ReviewType.RECOGNITION),
+            exercise(sessionId, 1, "run-into", ReviewType.RECOGNITION),
+        )
+        sessionRepository.save(session)
+        val second = session.exercises[1]
+
+        val failure = runCatching {
+            engine.registerAnswer(
+                session = session,
+                exercise = second,
+                rating = ReviewRating.GOOD,
+                reviewedAt = REVIEWED_AT,
+            )
+        }.exceptionOrNull()
+
+        assertTrue(failure is IllegalArgumentException)
+        // Sin esta comprobación la revisión quedaría registrada sin avanzar.
+        assertTrue(reviewRepository.events.isEmpty())
+        assertEquals(0, savedSession(sessionId).currentPosition)
     }
 
     @Test
@@ -255,12 +290,13 @@ class DefaultLearningEngineTest {
             engine.registerAnswer(
                 session = session,
                 exercise = foreign,
-                answer = UserAnswer.Choice(recognition(foreign).correctOptionId),
+                rating = ReviewRating.GOOD,
                 reviewedAt = REVIEWED_AT,
             )
         }.exceptionOrNull()
 
         assertTrue(failure is IllegalArgumentException)
+        assertTrue(reviewRepository.events.isEmpty())
     }
 
     @Test
@@ -283,11 +319,23 @@ class DefaultLearningEngineTest {
         exercises = exercises.toList(),
     )
 
+    private suspend fun evaluate(
+        session: LearningSession,
+        answer: UserAnswer,
+    ): AnswerEvaluation = engine.evaluateAnswer(
+        session = session,
+        exercise = requireNotNull(session.nextExercise),
+        answer = answer,
+    )
+
     private suspend fun recognition(exercise: Exercise): RecognitionExercise {
         val expression = requireNotNull(expressionRepository.getById(exercise.expressionId))
         return requireNotNull(generator.generate(expression, exercise.reviewType, EngineFixtures.all))
             as RecognitionExercise
     }
+
+    private suspend fun savedSession(id: SessionId): LearningSession =
+        requireNotNull(sessionRepository.getById(id))
 
     private companion object {
         const val NOW = 1_700_000_000_000L
