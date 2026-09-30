@@ -3379,15 +3379,15 @@ If the repository is empty, begin with Phase 0 and keep the first project struct
 [ ] Production/self-rating exercise implemented
 [x] LearningEngine implemented
 [x] Daily session generation implemented
-[ ] Onboarding implemented
-[ ] Home implemented
+[x] Onboarding implemented
+[x] Home implemented
 [ ] Learn flow implemented
 [ ] Practice flow implemented
 [ ] Session summary implemented
 [ ] Library implemented
 [ ] Progress implemented
 [ ] Offline behavior verified
-[ ] Unit tests passing
+[x] Unit tests passing
 [ ] Database tests passing
 [ ] Migration strategy verified
 [ ] Release build succeeds

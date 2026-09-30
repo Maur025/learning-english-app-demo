@@ -4,8 +4,8 @@ Offline-first Android English-learning app (Kotlin + Jetpack Compose + Material 
 
 ## Current state
 
-- Phases 0–6 done: scaffold + navigation skeleton, pure domain model, Room/DataStore persistence, the content system (versioned JSON packs, parser, validator, idempotent importer, 56 bundled expressions), the SM-2 scheduler, the exercise engine (generator + answer evaluator) and the learning engine (session planner, state progressor, `LearningEngine`).
-- No screens beyond the navigation skeleton and the template `HomeScreen`; no ViewModels yet (phases 7–8).
+- Phases 0–7 done: scaffold + navigation skeleton, pure domain model, Room/DataStore persistence, the content system (versioned JSON packs, parser, validator, idempotent importer, 56 bundled expressions), the SM-2 scheduler, the exercise engine (generator + answer evaluator), the learning engine (session planner, state progressor, `LearningEngine`) and the first usable screens (onboarding, Home and the practice placeholder).
+- The practice screen is a stub: exercises, rating and session summary arrive in phase 8.
 - Work through the phased roadmap (README §73), one small vertical slice at a time (README §84–85), keeping the build green after each step.
 - Open decisions to validate against this toolchain before adopting: DI approach (README §47), module split (README §15). Room landed on 2.8.5 (README §10). Record all versions in `gradle/libs.versions.toml`.
 
@@ -16,6 +16,21 @@ Offline-first Android English-learning app (Kotlin + Jetpack Compose + Material 
 - `ReviewRecorder` is the single write path for learning state. `DefaultLearningEngine` only loads, connects and persists.
 - `learning_sessions.currentPosition` is the index of the next unanswered exercise, so an interrupted session resumes exactly where it stopped. Additive migration `V1_TO_V2`; never add a destructive one.
 - `now`/timestamps are always explicit parameters — no injected `Clock`.
+
+## Screens and ViewModels
+
+- Every screen is stateless (`ui/<feature>/XScreen` takes a state object plus callbacks) and every state object comes from one ViewModel (`XUiState`, `XEffect`). Routes in `AppNavHost` only observe the ViewModel, paint the state and execute the effects — no domain decision lives in the nav layer.
+- `ui/AppViewModelFactory` builds ViewModels with `viewModelFactory { initializer { … } }` and resolves `AppContainer` through `CreationExtras.appContainer` (`di/CreationExtrasExt.kt`). It lives in `ui`, not `di`, so the object graph never references screens. Screens never receive the container as a parameter.
+- One-shot navigation uses `Channel<Effect>(BUFFERED).receiveAsFlow()`, never a field in the state: an effect must not be replayed on rotation.
+- Double-tap guards are raised **synchronously** before launching the coroutine (`isStartingSession`/`isSaving`); reading them inside the coroutine would let a second tap through in the same frame and create two sessions.
+- `StartDestinationViewModel` resolves `onboardingCompleted` once per process, and the nav graph is not drawn until it answers, so a returning user never sees onboarding again.
+- `HomeViewModel` takes `now: () -> Long` (default `System::currentTimeMillis`) and re-reads it on every subscription, so opening Home recomputes what is due. There is no timer.
+- Home counters are SQL aggregates (`observeDueCount`, `observeNewCount`, `observeSkillAverages`, `observeInProgress`), not in-memory folds. The Room repositories return 0/empty for an empty pack selection because `IN ()` is invalid SQL. `SkillAverages` percentages are `null` until the first review: an average over nothing is not 0 %.
+- Pack selection lives in `UserPreferences.selectedPackIds(installed)` (empty preference = all installed), shared by the planner and Home so the counters and the generated session always describe the same content.
+- Content installs in the background at startup, so onboarding and Home show a loading state while no pack is installed yet.
+- Deferred to phase 8: the "minutes studied today / goal" progress bar. `SessionStep.estimatedSeconds` is not persisted and `reviews.responseTimeMs` only exists once answers are registered, so any bar today would show invented numbers.
+- In tests, build ViewModels **inside** the test body, never as class fields: `viewModelScope` captures `Dispatchers.Main` at construction and `MainDispatcherRule` injects the test dispatcher afterwards, so a ViewModel created in the test constructor stays bound to the real main thread and its coroutines never run.
+- `StateFlow.first()` returns the current value without waiting; use `first { predicate }` in tests or you end up asserting the `initialValue`.
 
 ## Content packs
 
