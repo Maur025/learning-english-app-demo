@@ -22,6 +22,9 @@ class RoomSessionRepository(
     override fun observeRecent(limit: Int): Flow<List<LearningSession>> =
         learningSessionDao.observeRecent(limit).map { rows -> rows.map { it.toDomain() } }
 
+    override fun observeInProgress(): Flow<LearningSession?> =
+        learningSessionDao.observeInProgress().map { it?.toDomain() }
+
     override suspend fun getById(sessionId: SessionId): LearningSession? =
         learningSessionDao.getByIdWithExercises(sessionId.value)?.toDomain()
 

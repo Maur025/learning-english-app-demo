@@ -156,6 +156,31 @@ class RoomExpressionRepositoryTest {
     }
 
     @Test
+    fun `counts expressions that were never reviewed`() = runBlocking {
+        repository.upsertAll(
+            listOf(
+                Fixtures.domainExpression(),
+                Fixtures.domainExpression(id = "run-into", packId = "developer-english", phrase = "run into"),
+            ),
+        )
+        val stateRepository = RoomLearningStateRepository(database.learningStateDao())
+        stateRepository.upsert(Fixtures.domainLearningState())
+        stateRepository.upsert(
+            Fixtures.domainLearningState(expressionId = "run-into").copy(reviewCount = 3),
+        )
+
+        assertEquals(1, repository.observeNewCount(setOf(PackId(Fixtures.PACK_ID))).first())
+        assertEquals(0, repository.observeNewCount(setOf(PackId("developer-english"))).first())
+    }
+
+    @Test
+    fun `counts nothing when no pack is selected`() = runBlocking {
+        repository.upsertAll(listOf(Fixtures.domainExpression()))
+
+        assertEquals(0, repository.observeNewCount(emptySet()).first())
+    }
+
+    @Test
     fun `reads a snapshot of the whole catalog with its relations`() = runBlocking {
         repository.upsertAll(
             listOf(

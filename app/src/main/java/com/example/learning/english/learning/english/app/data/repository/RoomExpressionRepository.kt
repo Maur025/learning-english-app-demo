@@ -14,6 +14,7 @@ import com.example.learning.english.learning.english.app.domain.model.Expression
 import com.example.learning.english.learning.english.app.domain.model.PackId
 import com.example.learning.english.learning.english.app.domain.repository.ExpressionRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 /**
@@ -44,6 +45,13 @@ class RoomExpressionRepository(
 
     override suspend fun getAll(): List<Expression> =
         expressionDao.getAll().map { it.toDomain() }
+
+    override fun observeNewCount(packIds: Set<PackId>): Flow<Int> =
+        if (packIds.isEmpty()) {
+            flowOf(0)
+        } else {
+            expressionDao.observeNewCount(packIds.toStorageIds()).map { it }
+        }
 
     override suspend fun upsertAll(expressions: List<Expression>) {
         if (expressions.isEmpty()) return

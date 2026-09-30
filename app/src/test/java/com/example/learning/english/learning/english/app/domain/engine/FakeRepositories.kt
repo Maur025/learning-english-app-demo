@@ -9,6 +9,7 @@ import com.example.learning.english.learning.english.app.domain.model.PackId
 import com.example.learning.english.learning.english.app.domain.model.ReviewEvent
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
 import com.example.learning.english.learning.english.app.domain.model.SessionId
+import com.example.learning.english.learning.english.app.domain.model.SkillAverages
 import com.example.learning.english.learning.english.app.domain.repository.ExpressionRepository
 import com.example.learning.english.learning.english.app.domain.repository.LearningStateRepository
 import com.example.learning.english.learning.english.app.domain.repository.ReviewRepository
@@ -38,6 +39,9 @@ internal class FakeExpressionRepository(
 
     override suspend fun getAll(): List<Expression> = rows.values.sortedBy { it.phrase }
 
+    override fun observeNewCount(packIds: Set<PackId>): Flow<Int> =
+        flowOf(rows.values.count { it.packId in packIds })
+
     override suspend fun upsertAll(expressions: List<Expression>) {
         expressions.forEach { rows[it.id.value] = it }
     }
@@ -57,6 +61,11 @@ internal class FakeLearningStateRepository(
     override suspend fun getByExpression(expressionId: ExpressionId): LearningState? = rows[expressionId.value]
 
     override suspend fun getAll(): List<LearningState> = rows.values.toList()
+
+    override fun observeDueCount(now: Long, packIds: Set<PackId>): Flow<Int> = flowOf(0)
+
+    override fun observeSkillAverages(packIds: Set<PackId>): Flow<SkillAverages> =
+        flowOf(SkillAverages.EMPTY)
 
     override suspend fun upsert(state: LearningState) {
         rows[state.expressionId.value] = state
@@ -90,6 +99,9 @@ internal class FakeSessionRepository : SessionRepository {
 
     override fun observeRecent(limit: Int): Flow<List<LearningSession>> =
         flowOf(sessions.values.sortedByDescending { it.startedAt }.take(limit))
+
+    override fun observeInProgress(): Flow<LearningSession?> =
+        flowOf(sessions.values.filterNot { it.isCompleted }.maxByOrNull { it.startedAt })
 
     override suspend fun getById(sessionId: SessionId): LearningSession? = sessions[sessionId.value]
 

@@ -1,18 +1,15 @@
 package com.example.learning.english.learning.english.app.domain.service
 
+import com.example.learning.english.learning.english.app.domain.engine.FakeLearningStateRepository
+import com.example.learning.english.learning.english.app.domain.engine.FakeReviewRepository
+import com.example.learning.english.learning.english.app.domain.engine.LearningStateProgressor
 import com.example.learning.english.learning.english.app.domain.model.ExpressionId
 import com.example.learning.english.learning.english.app.domain.model.LearningStage
 import com.example.learning.english.learning.english.app.domain.model.LearningState
-import com.example.learning.english.learning.english.app.domain.model.ReviewEvent
 import com.example.learning.english.learning.english.app.domain.model.ReviewRating
 import com.example.learning.english.learning.english.app.domain.model.ReviewType
 import com.example.learning.english.learning.english.app.domain.model.SessionId
-import com.example.learning.english.learning.english.app.domain.repository.LearningStateRepository
-import com.example.learning.english.learning.english.app.domain.engine.LearningStateProgressor
-import com.example.learning.english.learning.english.app.domain.repository.ReviewRepository
 import com.example.learning.english.learning.english.app.domain.scheduler.Sm2ReviewScheduler
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -112,43 +109,6 @@ class ReviewRecorderTest {
 
         assertEquals(2, reviewRepository.events.size)
         assertEquals(2, learningStateRepository.getByExpression(EXPRESSION_ID)?.reviewCount)
-    }
-
-    private class FakeLearningStateRepository : LearningStateRepository {
-
-        private val rows = mutableMapOf<String, LearningState>()
-
-        override fun observeAll(): Flow<List<LearningState>> = flowOf(rows.values.toList())
-
-        override fun observeByExpression(expressionId: ExpressionId): Flow<LearningState?> =
-            flowOf(rows[expressionId.value])
-
-        override suspend fun getByExpression(expressionId: ExpressionId): LearningState? =
-            rows[expressionId.value]
-
-        override suspend fun getAll(): List<LearningState> = rows.values.toList()
-
-        override suspend fun upsert(state: LearningState) {
-            rows[state.expressionId.value] = state
-        }
-
-        override suspend fun upsertAll(states: List<LearningState>) {
-            for (state in states) upsert(state)
-        }
-    }
-
-    private class FakeReviewRepository : ReviewRepository {
-
-        val events = mutableListOf<ReviewEvent>()
-
-        override fun observeHistory(expressionId: ExpressionId): Flow<List<ReviewEvent>> =
-            flowOf(events.filter { it.expressionId == expressionId })
-
-        override fun observeAll(): Flow<List<ReviewEvent>> = flowOf(events.toList())
-
-        override suspend fun record(event: ReviewEvent) {
-            events += event
-        }
     }
 
     private companion object {

@@ -28,6 +28,16 @@ interface LearningSessionDao {
     @Query("SELECT COUNT(*) FROM learning_sessions")
     suspend fun count(): Int
 
+    /**
+     * Última sesión sin terminar, para poder ofrecer "continuar" en Home.
+     *
+     * No trae ejercicios: a Home solo le basta saber que existe y su id. Quien
+     * vaya a practicarla la carga entera con `getByIdWithExercises`, así que
+     * Home no paga un deserializado de ejercicios que no va a mostrar.
+     */
+    @Query("SELECT * FROM learning_sessions WHERE completedAt IS NULL ORDER BY startedAt DESC LIMIT 1")
+    fun observeInProgress(): Flow<LearningSessionEntity?>
+
     @Upsert
     suspend fun upsert(session: LearningSessionEntity)
 

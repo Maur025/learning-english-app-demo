@@ -49,6 +49,23 @@ interface ExpressionDao {
     suspend fun count(): Int
 
     /**
+     * Expresiones de los packs indicados que aún no se han revisado.
+     *
+     * "Sin revisar" incluye las dos formas posibles: no tener fila de estado o
+     * tenerla con `reviewCount` a 0. El `LEFT JOIN` es lo que permite distinguir
+     * el contenido que el importador aún no ha tocado del que nadie ha abierto.
+     */
+    @Query(
+        """
+        SELECT COUNT(*) FROM expressions e
+        LEFT JOIN learning_state s ON s.expressionId = e.id
+        WHERE (s.expressionId IS NULL OR s.reviewCount = 0)
+          AND e.packId IN (:packIds)
+        """,
+    )
+    fun observeNewCount(packIds: List<String>): Flow<Int>
+
+    /**
      * Guarda la expresión con sus colecciones dependientes.
      *
      * Las colecciones se reescriben por completo: si el contenido deja de traer un

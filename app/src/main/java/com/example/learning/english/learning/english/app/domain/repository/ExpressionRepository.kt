@@ -16,5 +16,8 @@ interface ExpressionRepository {
 
     suspend fun getAll(): List<Expression>
 
+    /** Expresiones de [packIds] que aún no se han revisado nunca. */
+    fun observeNewCount(packIds: Set<PackId>): Flow<Int>
+
     suspend fun upsertAll(expressions: List<Expression>)
 }

@@ -130,4 +130,29 @@ class ExpressionDaoTest {
         assertEquals(1, corePack.size)
         assertEquals("figure out", corePack.single().expression.phrase)
     }
+
+    @Test
+    fun `new count covers expressions without state and with no reviews`() = runBlocking {
+        dao.upsertExpressionRow(Fixtures.expressionEntity())
+        dao.upsertExpressionRow(Fixtures.expressionEntity(id = "run-into", phrase = "run into"))
+        dao.upsertExpressionRow(Fixtures.expressionEntity(id = "fresh", phrase = "fresh"))
+        database.learningStateDao().upsert(Fixtures.learningStateEntity())
+        database.learningStateDao().upsert(
+            Fixtures.learningStateEntity(expressionId = "run-into").copy(reviewCount = 2),
+        )
+
+        val newCount = dao.observeNewCount(listOf(Fixtures.PACK_ID)).first()
+
+        assertEquals(2, newCount)
+    }
+
+    @Test
+    fun `new count only includes the selected packs`() = runBlocking {
+        database.contentPackDao().upsert(Fixtures.pack.copy(id = "developer-english", name = "Developer English"))
+        dao.upsertExpressionRow(Fixtures.expressionEntity())
+        dao.upsertExpressionRow(Fixtures.expressionEntity(id = "run-into", packId = "developer-english"))
+
+        assertEquals(1, dao.observeNewCount(listOf(Fixtures.PACK_ID)).first())
+        assertEquals(1, dao.observeNewCount(listOf("developer-english")).first())
+    }
 }

@@ -114,4 +114,38 @@ class SessionPersistenceTest {
 
         assertEquals(listOf("new", "mid"), recent.map { it.id.value })
     }
+
+    @Test
+    fun `exposes the unfinished session without its exercises`() = runBlocking {
+        repository.save(
+            LearningSession(
+                id = SessionId("in-progress"),
+                startedAt = 1_000L,
+                currentPosition = 1,
+                exercises = listOf(exercise(0, "figure-out"), exercise(1, "run-into")),
+            ),
+        )
+
+        val inProgress = repository.observeInProgress().first()
+
+        assertEquals("in-progress", inProgress?.id?.value)
+        assertEquals(1, inProgress?.currentPosition)
+        assertTrue(inProgress?.exercises.orEmpty().isEmpty())
+    }
+
+    @Test
+    fun `has no session in progress once the last one is completed`() = runBlocking {
+        repository.save(session(listOf(exercise(0, "figure-out")), completedAt = null, currentPosition = 0))
+        repository.save(session(listOf(exercise(0, "figure-out"))))
+
+        assertNull(repository.observeInProgress().first())
+    }
+
+    @Test
+    fun `keeps only the most recent unfinished session`() = runBlocking {
+        repository.save(LearningSession(SessionId("abandoned"), startedAt = 1_000L, currentPosition = 0))
+        repository.save(LearningSession(SessionId("latest"), startedAt = 3_000L, currentPosition = 2))
+
+        assertEquals("latest", repository.observeInProgress().first()?.id?.value)
+    }
 }
