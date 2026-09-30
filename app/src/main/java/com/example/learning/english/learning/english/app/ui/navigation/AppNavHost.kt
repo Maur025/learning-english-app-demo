@@ -58,8 +58,10 @@ fun AppNavHost(
             HomeRoute(onOpenSession = { sessionId -> navController.navigate(Routes.practice(sessionId)) })
         }
         composable(route = Routes.PRACTICE) { entry ->
-            val sessionId = entry.arguments?.getString(Routes.PRACTICE_ARG_SESSION_ID)
-            PracticeScreen(sessionId = SessionId(sessionId.orEmpty()))
+            // El id lo pone siempre `Routes.practice`: si falta, la ruta está mal
+            // construida, y un `SessionId("")` silencioso sería peor fallar.
+            val sessionId = requireNotNull(entry.arguments?.getString(Routes.PRACTICE_ARG_SESSION_ID))
+            PracticeScreen(sessionId = SessionId(sessionId))
         }
     }
 }

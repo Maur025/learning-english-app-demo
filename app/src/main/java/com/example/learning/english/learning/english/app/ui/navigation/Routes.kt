@@ -13,8 +13,10 @@ object Routes {
     const val ONBOARDING = "onboarding"
     const val HOME = "home"
 
-    const val PRACTICE = "practice/{sessionId}"
     const val PRACTICE_ARG_SESSION_ID = "sessionId"
 
-    fun practice(sessionId: SessionId): String = "practice/${sessionId.value}"
+    private const val PRACTICE_BASE = "practice"
+    const val PRACTICE = "$PRACTICE_BASE/{$PRACTICE_ARG_SESSION_ID}"
+
+    fun practice(sessionId: SessionId): String = "$PRACTICE_BASE/${sessionId.value}"
 }
