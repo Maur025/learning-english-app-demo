@@ -33,4 +33,6 @@
 
     <string name="practice_title">Practice</string>
     <string name="practice_coming_soon">Session %1$s is saved. Exercises arrive with the next phase.</string>
+    <string name="practice_session_missing">This session no longer exists.</string>
+    <string name="practice_exercise_unavailable">This exercise cannot be shown with the installed content.</string>
 </resources>
